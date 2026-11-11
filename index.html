@@ -10,16 +10,15 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- فایل‌های استایل تفکیک‌شده -->
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="theme-bg theme-text font-['Vazirmatn'] select-none overflow-x-hidden min-h-screen flex justify-center antialiased">
 
   <!-- کانتینر تبلتی -->
-  <div class="w-full max-w-xl md:max-w-2xl min-h-screen relative flex flex-col theme-border-x pb-32">
+  <div class="w-full max-w-xl md:max-w-2xl min-h-screen relative flex flex-col theme-border-x pb-36">
 
-    <!-- ۱. هدر شیشه‌ای (با فاصله بیشتر و استاندارد از بالای صفحه) -->
+    <!-- ۱. هدر شیشه‌ای اپل (کاملاً پایین‌تر از دکمه‌های Close و سه‌نقطه تلگرام) -->
     <header class="sticky top-0 z-40 apple-header px-4 pb-3 flex items-center justify-between theme-border-b">
       <div class="flex items-center gap-3">
         <button onclick="toggleSideMenu()" class="apple-btn p-2 rounded-xl">
@@ -171,7 +170,7 @@
     <!-- ۸. مودال چت زنده -->
     <div id="chat-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-2xl hidden flex justify-center safe-top safe-bottom">
       <div class="w-full max-w-xl md:max-w-2xl h-full flex flex-col theme-bg">
-        <div class="apple-header p-3 flex items-center justify-between theme-border-b">
+        <div class="p-3 flex items-center justify-between theme-border-b apple-header">
           <div class="flex items-center gap-2">
             <div class="w-8 h-8 rounded-full bg-[#0071e3]/15 text-[#0071e3] flex items-center justify-center">
               <i data-lucide="messages-square" class="w-4 h-4"></i>
@@ -192,7 +191,7 @@
             </div>
           </div>
         </div>
-        <div class="p-3 apple-header theme-border-t flex gap-2">
+        <div class="p-3 theme-border-t flex gap-2">
           <input type="text" id="chat-input" placeholder="پیام خود را بنویسید..." class="no-zoom apple-input-wrapper rounded-xl px-3 py-2 outline-none w-full text-xs">
           <button onclick="sendChatMessage()" class="apple-btn px-4 bg-[#0071e3] text-white rounded-xl flex items-center justify-center font-bold">
             <i data-lucide="send" class="w-4 h-4"></i>
@@ -232,22 +231,22 @@
       </div>
     </div>
 
-    <!-- ۱۰. فوتر و منوی شناور سابق (Floating Dock شیک اپل) -->
-    <nav class="fixed bottom-4 left-0 right-0 z-40 flex justify-center px-4 pointer-events-none">
-      <div class="w-full max-w-xl md:max-w-2xl apple-header rounded-2xl theme-border px-6 py-2.5 flex justify-between items-center shadow-2xl pointer-events-auto">
-        <button onclick="location.reload()" class="nav-btn flex flex-col items-center gap-1 text-[11px] text-[#0071e3] font-bold">
+    <!-- ۱۰. فوتر و منوی شناور شیک (اصلاح‌شده با کلاس اختصاصی apple-dock بدون کشیدگی) -->
+    <nav class="fixed bottom-5 left-0 right-0 z-40 flex justify-center px-4 pointer-events-none">
+      <div class="w-full max-w-md apple-dock rounded-full px-4 py-2 flex justify-around items-center shadow-xl pointer-events-auto">
+        <button onclick="location.reload()" class="nav-btn flex flex-col items-center gap-0.5 text-[11px] text-[#0071e3] font-bold">
           <i data-lucide="store" class="w-5 h-5"></i>
           <span>مارکت</span>
         </button>
-        <button onclick="toggleSideMenu()" class="nav-btn flex flex-col items-center gap-1 text-[11px] theme-subtext">
+        <button onclick="toggleSideMenu()" class="nav-btn flex flex-col items-center gap-0.5 text-[11px] theme-subtext hover:text-[#0071e3]">
           <i data-lucide="layout-grid" class="w-5 h-5"></i>
           <span>اصناف</span>
         </button>
-        <button onclick="openChatModal()" class="nav-btn flex flex-col items-center gap-1 text-[11px] theme-subtext">
+        <button onclick="openChatModal()" class="nav-btn flex flex-col items-center gap-0.5 text-[11px] theme-subtext hover:text-[#0071e3]">
           <i data-lucide="message-square" class="w-5 h-5"></i>
           <span>پیام‌ها</span>
         </button>
-        <button onclick="openCartModal()" class="nav-btn flex flex-col items-center gap-1 text-[11px] theme-subtext">
+        <button onclick="openCartModal()" class="nav-btn flex flex-col items-center gap-0.5 text-[11px] theme-subtext hover:text-[#0071e3]">
           <i data-lucide="shopping-bag" class="w-5 h-5"></i>
           <span>سبد خرید</span>
         </button>
@@ -256,7 +255,6 @@
 
   </div>
 
-  <!-- اسکریپت‌های تفکیک‌شده به ترتیب اجرا -->
   <script src="js/config.js"></script>
   <script src="js/theme.js"></script>
   <script src="js/slider.js"></script>
