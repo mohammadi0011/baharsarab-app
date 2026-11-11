@@ -12,7 +12,7 @@ function initHeroSlider() {
       <span class="text-[10px] text-amber-600 dark:text-[#e5b869] font-bold tracking-wider mb-1">راسته تجارتی بهارسراب</span>
       <h2 class="text-base font-extrabold">${item.title}</h2>
       <p class="text-xs theme-subtext mt-1">${item.subtitle}</p>
-      <span class="text-[10px] text-[#0071e3] mt-2 flex items-center gap-1 font-bold">مشاهده دکان‌های این صنف ←</span>
+      <span class="text-[10px] text-[#0071e3] mt-2 flex items-center gap-1 font-bold">مشاهده دکان‌های این راسته ←</span>
     </div>
   `).join("");
 
@@ -37,7 +37,7 @@ function buildCategorySideMenu() {
   const list = document.getElementById("categories-menu-list");
   list.innerHTML = `
     <button onclick="clearCategoryFilter(); toggleSideMenu();" class="w-full text-right py-2 px-3 rounded-xl text-xs flex items-center justify-between hover:bg-black/5 dark:hover:bg-white/5 font-bold">
-      <span>نمایش همه اصناف</span>
+      <span>نمایش همه راسته‌ها</span>
       <i data-lucide="check" class="w-3.5 h-3.5 text-[#0071e3]"></i>
     </button>
     ${heroCategories.map(cat => `
@@ -52,8 +52,11 @@ function buildCategorySideMenu() {
 function filterByCategory(tag) {
   currentFilter = tag;
   document.getElementById("clear-filter-btn").classList.remove("hidden");
-  document.getElementById("clear-filter-btn").innerText = `صنف: ${tag} ✕`;
+  document.getElementById("clear-filter-btn").innerText = `راسته: ${tag} ✕`;
   renderDynamicFloors();
+
+  // اسکرول نرم به سمت ویترین دکان‌ها
+  document.getElementById("floors-container")?.scrollIntoView({ behavior: 'smooth' });
 }
 
 function clearCategoryFilter() {
