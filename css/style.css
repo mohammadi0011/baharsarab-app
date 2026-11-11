@@ -1,0 +1,50 @@
+/* موقعیت هدر و فاصله کافی از ناچ و دکمه ضربدر تلگرام */
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* فاصله بیشتر هدر به درخواست شما تا کامل پایین‌تر بیاید */
+.apple-header {
+  padding-top: calc(var(--safe-top) + 24px) !important;
+  background: var(--bg-header);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+}
+
+.safe-top {
+  padding-top: calc(var(--safe-top) + 20px);
+}
+.safe-bottom {
+  padding-bottom: var(--safe-bottom);
+}
+
+/* جلوگیری قطعی از بسته شدن مینی‌اپ هنگام اسکرول به پایین */
+html, body {
+  overscroll-behavior-y: none !important;
+  overscroll-behavior: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* جلوگیری قطعی از زوم شدن هنگام تایپ */
+input, select, textarea, .no-zoom {
+  font-size: 16px !important;
+  touch-action: manipulation;
+}
+
+/* اسکرول‌بار مخفی */
+::-webkit-scrollbar { display: none; }
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
