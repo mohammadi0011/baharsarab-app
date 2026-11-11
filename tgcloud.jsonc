@@ -1,0 +1,6 @@
+{
+  "static": {
+    "source": "public",
+    "spa": true
+  }
+}
