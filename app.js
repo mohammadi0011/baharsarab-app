@@ -1,23 +1,42 @@
-// ۱. تنظیمات تلگرام و قفل ضد سوایپ (جلوگیری از بسته شدن تصادفی)
+// ۱. راه‌اندازی و ست کردن تم هوشمند متناسب با تم دستگاه و تلگرام
 const tg = window.Telegram?.WebApp;
+
+function applyAdaptiveTheme() {
+  const isDark = tg?.colorScheme === 'dark' || 
+    (!tg?.colorScheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+  if (isDark) {
+    document.body.classList.remove('light-theme');
+    document.body.classList.add('dark-theme');
+    if (tg?.setHeaderColor) tg.setHeaderColor('#000000');
+    if (tg?.setBackgroundColor) tg.setBackgroundColor('#000000');
+  } else {
+    document.body.classList.remove('dark-theme');
+    document.body.classList.add('light-theme');
+    if (tg?.setHeaderColor) tg.setHeaderColor('#f5f5f7');
+    if (tg?.setBackgroundColor) tg.setBackgroundColor('#f5f5f7');
+  }
+}
+
 if (tg) {
   tg.ready();
   tg.expand();
   tg.enableClosingConfirmation();
-  // غیرفعال کردن کشیدن به پایین برای بسته شدن مینی‌اپ
-  if (tg.disableVerticalSwipes) {
-    tg.disableVerticalSwipes();
-  }
+  if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
+  applyAdaptiveTheme();
+  tg.onEvent('themeChanged', applyAdaptiveTheme);
+} else {
+  applyAdaptiveTheme();
 }
 
-// دیتای اسلایدر ۵ ثانیه‌ای اصلی
+// دیتای راسته‌ها برای اسلایدر ۵ ثانیه‌ای و منوی کشویی
 const heroCategories = [
-  { id: "gold", title: "راسته طلا و نقره", subtitle: "جدیدترین مدل‌های طلای ۲۱ عیار و نقره اصیل", tag: "طلا و نقره", bg: "from-[#2b1f0c] to-[#000000]", icon: "💍" },
-  { id: "clothing", title: "لباس و گند سنتی", subtitle: "بزرگ‌ترین بورس دست‌دوز و گندهای هزارگی", tag: "لباس سنتی", bg: "from-[#2d1118] to-[#000000]", icon: "👗" },
-  { id: "currency", title: "صرافی‌ها و تبادله اسعار", subtitle: "حواله‌جات سریع و تبدیل دالر و افغانی در تهکوی", tag: "صرافی", bg: "from-[#0c2417] to-[#000000]", icon: "💱" },
-  { id: "shoes", title: "بوت، کیف و بکس زنانه", subtitle: "ترندهای لوکس فصلی و مجلسی", tag: "بوت و کیف", bg: "from-[#20102b] to-[#000000]", icon: "👠" },
-  { id: "cosmetics", title: "عطر و لوازم آرایشی", subtitle: "برندهای معتبر فرانسوی و ادکلن‌های اصل", tag: "آرایشی", bg: "from-[#2b1020] to-[#000000]", icon: "💄" },
-  { id: "cargo", title: "کارگو و انتقال اموال", subtitle: "ارسال سریع به استرالیا، اروپا و کانادا", tag: "کارگو", bg: "from-[#0f1d30] to-[#000000]", icon: "✈️" }
+  { id: "gold", title: "راسته طلا و نقره", subtitle: "جدیدترین مدل‌های طلای ۲۱ عیار و نقره اصیل", tag: "طلا و نقره", bgDark: "from-[#2b1f0c] to-[#000000]", bgLight: "from-[#fff3d6] to-[#f5f5f7]", icon: "💍" },
+  { id: "clothing", title: "لباس و گند سنتی", subtitle: "بزرگ‌ترین بورس دست‌دوز و گندهای هزارگی", tag: "لباس سنتی", bgDark: "from-[#2d1118] to-[#000000]", bgLight: "from-[#ffe8ec] to-[#f5f5f7]", icon: "👗" },
+  { id: "currency", title: "صرافی‌ها و تبادله اسعار", subtitle: "حواله‌جات سریع و تبدیل دالر و افغانی در تهکوی", tag: "صرافی", bgDark: "from-[#0c2417] to-[#000000]", bgLight: "from-[#e4f7eb] to-[#f5f5f7]", icon: "💱" },
+  { id: "shoes", title: "بوت، کیف و بکس زنانه", subtitle: "ترندهای لوکس فصلی و مجلسی", tag: "بوت و کیف", bgDark: "from-[#20102b] to-[#000000]", bgLight: "from-[#f4e8ff] to-[#f5f5f7]", icon: "👠" },
+  { id: "cosmetics", title: "عطر و لوازم آرایشی", subtitle: "برندهای معتبر فرانسوی و ادکلن‌های اصل", tag: "آرایشی", bgDark: "from-[#2b1020] to-[#000000]", bgLight: "from-[#ffe8f3] to-[#f5f5f7]", icon: "💄" },
+  { id: "cargo", title: "کارگو و انتقال اموال", subtitle: "ارسال سریع به استرالیا، اروپا و کانادا", tag: "کارگو", bgDark: "from-[#0f1d30] to-[#000000]", bgLight: "from-[#e6f0ff] to-[#f5f5f7]", icon: "✈️" }
 ];
 
 let heroSlideIndex = 0;
@@ -25,8 +44,8 @@ let cart = [];
 let allShops = [];
 let activeShop = null;
 let currentFilter = null;
-let floorPagination = {}; // نگهداری صفحه چرخش هر طبقه
-let floorIntervals = {};  // تایمرهای ۵ ثانیه‌ای هر طبقه
+let floorPagination = {};
+let floorIntervals = {};
 
 document.addEventListener("DOMContentLoaded", async () => {
   lucide.createIcons();
@@ -36,62 +55,60 @@ document.addEventListener("DOMContentLoaded", async () => {
   checkDeepLinkParams();
 });
 
-// ۲. راه‌اندازی اسلایدر ۵ ثانیه‌ای هدر
+// ۲. اسلایدر ۵ ثانیه‌ای هوشمند
 function initHeroSlider() {
   const container = document.getElementById("hero-slider");
   const dots = document.getElementById("slider-dots");
+  const isDark = document.body.classList.contains('dark-theme');
 
-  container.innerHTML = heroCategories.map((item, idx) => `
-    <div onclick="filterByCategory('${item.tag}')" class="min-w-full h-full bg-gradient-to-r ${item.bg} p-5 flex flex-col justify-center relative">
-      <span class="text-4xl absolute left-5 top-5 opacity-30">${item.icon}</span>
-      <span class="text-[10px] text-[#e5b869] font-bold tracking-wider mb-1">راسته اختصاصی بهارسراب</span>
-      <h2 class="text-base font-extrabold text-white">${item.title}</h2>
-      <p class="text-xs text-[#a1a1a6] mt-1">${item.subtitle}</p>
-      <span class="text-[10px] text-[#2997ff] mt-2 flex items-center gap-1 font-medium">مشاهده دکان‌های این صنف ←</span>
+  container.innerHTML = heroCategories.map((item) => `
+    <div onclick="filterByCategory('${item.tag}')" class="min-w-full h-full bg-gradient-to-r ${isDark ? item.bgDark : item.bgLight} p-5 flex flex-col justify-center relative">
+      <span class="text-4xl absolute left-5 top-5 opacity-40">${item.icon}</span>
+      <span class="text-[10px] text-amber-600 dark:text-[#e5b869] font-bold tracking-wider mb-1">راسته تجارتی بهارسراب</span>
+      <h2 class="text-base font-extrabold">${item.title}</h2>
+      <p class="text-xs theme-subtext mt-1">${item.subtitle}</p>
+      <span class="text-[10px] text-[#0071e3] mt-2 flex items-center gap-1 font-bold">مشاهده دکان‌های این صنف ←</span>
     </div>
   `).join("");
 
   dots.innerHTML = heroCategories.map((_, i) => `
-    <span class="w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === 0 ? 'bg-white w-4' : 'bg-white/30'}"></span>
+    <span class="w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === 0 ? 'bg-[#0071e3] w-4' : 'bg-slate-400/30'}"></span>
   `).join("");
 
-  // تایمر ۵ ثانیه‌ای (۵۰۰۰ میلی‌ثانیه)
   setInterval(() => {
     heroSlideIndex = (heroSlideIndex + 1) % heroCategories.length;
     container.style.transform = `translateX(${heroSlideIndex * 100}%)`;
     Array.from(dots.children).forEach((dot, idx) => {
-      dot.className = `w-1.5 h-1.5 rounded-full transition-all duration-300 ${idx === heroSlideIndex ? 'bg-white w-4' : 'bg-white/30'}`;
+      dot.className = `w-1.5 h-1.5 rounded-full transition-all duration-300 ${idx === heroSlideIndex ? 'bg-[#0071e3] w-4' : 'bg-slate-400/30'}`;
     });
   }, 5000);
 }
 
-// ۳. منوی کشویی کناری (Side Drawer)
+// ۳. منوی کشویی کناری
 function toggleSideMenu() {
-  const drawer = document.getElementById("side-drawer");
-  drawer.classList.toggle("hidden");
+  document.getElementById("side-drawer").classList.toggle("hidden");
 }
 
 function buildCategorySideMenu() {
   const list = document.getElementById("categories-menu-list");
   list.innerHTML = `
-    <button onclick="clearCategoryFilter(); toggleSideMenu();" class="w-full text-right py-2 px-3 rounded-xl text-xs flex items-center justify-between text-white hover:bg-white/[0.08]">
+    <button onclick="clearCategoryFilter(); toggleSideMenu();" class="w-full text-right py-2 px-3 rounded-xl text-xs flex items-center justify-between hover:bg-black/5 dark:hover:bg-white/5 font-bold">
       <span>نمایش همه اصناف</span>
-      <i data-lucide="check" class="w-3.5 h-3.5 text-[#2997ff]"></i>
+      <i data-lucide="check" class="w-3.5 h-3.5 text-[#0071e3]"></i>
     </button>
     ${heroCategories.map(cat => `
-      <button onclick="filterByCategory('${cat.tag}'); toggleSideMenu();" class="w-full text-right py-2 px-3 rounded-xl text-xs flex items-center justify-between text-[#86868b] hover:text-white hover:bg-white/[0.08]">
+      <button onclick="filterByCategory('${cat.tag}'); toggleSideMenu();" class="w-full text-right py-2 px-3 rounded-xl text-xs flex items-center justify-between theme-subtext hover:text-black dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5">
         <span class="flex items-center gap-2"><span>${cat.icon}</span> <span>${cat.title}</span></span>
-        <i data-lucide="chevron-left" class="w-3.5 h-3.5 opacity-50"></i>
+        <i data-lucide="chevron-left" class="w-3.5 h-3.5 opacity-40"></i>
       </button>
     `).join('')}
   `;
 }
 
-// ۴. فیلتر کردن اصناف با کلیک روی اسلایدر یا منو
 function filterByCategory(tag) {
   currentFilter = tag;
   document.getElementById("clear-filter-btn").classList.remove("hidden");
-  document.getElementById("clear-filter-btn").innerText = `فیلتر: ${tag} ✕`;
+  document.getElementById("clear-filter-btn").innerText = `صنف: ${tag} ✕`;
   renderDynamicFloors();
 }
 
@@ -101,7 +118,7 @@ function clearCategoryFilter() {
   renderDynamicFloors();
 }
 
-// ۵. دریافت دکان‌ها از سرورلس یا دیتای پیش‌فرض
+// ۴. بارگذاری اطلاعات دکان‌ها
 async function loadShopsData() {
   try {
     if (tg?.Serverless) {
@@ -141,25 +158,22 @@ function loadDefaultShops() {
   renderDynamicFloors();
 }
 
-// ۶. ساخت و تفکیک کاملاً داینامیک طبقات + ۴ کارت چرخان ۵ ثانیه‌ای
+// ۵. ساخت خودکار طبقات و ۴ کارت چرخشی ۵ ثانیه‌ای
 function renderDynamicFloors() {
   const container = document.getElementById("floors-container");
   
-  // متوقف کردن تایمرهای قبلی
   Object.values(floorIntervals).forEach(clearInterval);
   floorIntervals = {};
 
-  // فیلتر کردن دکان‌ها در صورت انتخاب کاربر
   let filtered = allShops;
   if (currentFilter) {
     filtered = allShops.filter(s => s.category?.includes(currentFilter) || s.shopName?.includes(currentFilter));
   }
 
-  // استخراج خودکار و داینامیک تمام طبقات ثبت‌شده
   const floorsList = [...new Set(filtered.map(s => s.floor || 'سایر طبقات'))];
 
   if (floorsList.length === 0) {
-    container.innerHTML = `<div class="apple-card p-6 text-center text-xs text-[#86868b]">هیچ دکانی در این صنف یافت نشد.</div>`;
+    container.innerHTML = `<div class="theme-card p-6 text-center text-xs theme-subtext">هیچ دکانی در این صنف یافت نشد.</div>`;
     return;
   }
 
@@ -167,31 +181,28 @@ function renderDynamicFloors() {
     const shopsOnFloor = filtered.filter(s => (s.floor || 'سایر طبقات') === floorName);
     const floorKey = encodeURIComponent(floorName);
     
-    // مقداردهی اولیه صفحه‌بندی طبقه
     if (!floorPagination[floorKey]) {
       floorPagination[floorKey] = { page: 0, isExpanded: false };
     }
 
     return `
       <section class="animate-fade-in" id="floor-sec-${floorKey}">
-        <!-- هدر طبقه -->
         <div class="flex items-center justify-between mb-2">
-          <h3 class="text-xs font-bold text-white flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-[#2997ff]"></span>
-            ${floorName} <span class="text-[10px] text-[#86868b] font-normal">(${shopsOnFloor.length} غرفه)</span>
+          <h3 class="text-xs font-bold flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#0071e3]"></span>
+            ${floorName} <span class="text-[10px] theme-subtext font-normal">(${shopsOnFloor.length} غرفه)</span>
           </h3>
-          <span class="text-[10px] text-[#86868b]">بهارسراب</span>
+          <span class="text-[10px] theme-subtext">بهارسراب</span>
         </div>
 
-        <!-- اسلایدر ۱۰ تایی تصاویر و بنرهای طبقه -->
-        <div class="relative overflow-hidden rounded-xl h-24 mb-3 border border-white/[0.08] apple-card">
+        <div class="relative overflow-hidden rounded-xl h-24 mb-3 theme-card shadow-sm">
           <div id="floor-slider-${floorKey}" class="flex transition-transform duration-500 h-full">
             ${Array.from({ length: 10 }).map((_, i) => `
-              <div class="min-w-full h-full bg-[#161617] flex items-center justify-between px-4 border border-white/[0.04]">
+              <div class="min-w-full h-full flex items-center justify-between px-4">
                 <div>
-                  <span class="text-[9px] text-[#e5b869] font-bold">ویترین اختصاصی • اسلاید ${i + 1} از ۱۰</span>
-                  <h4 class="text-xs font-bold text-white mt-0.5">${floorName} - بورس اجناس درجه یک</h4>
-                  <p class="text-[10px] text-[#86868b]">تخفیفات ویژه و اجناس برتر مارکت</p>
+                  <span class="text-[9px] text-amber-600 dark:text-[#e5b869] font-bold">ویترین اختصاصی • اسلاید ${i + 1} از ۱۰</span>
+                  <h4 class="text-xs font-bold mt-0.5">${floorName} - بورس اجناس درجه یک</h4>
+                  <p class="text-[10px] theme-subtext">تخفیفات ویژه و اجناس برتر مارکت</p>
                 </div>
                 <span class="text-2xl">✨</span>
               </div>
@@ -199,14 +210,10 @@ function renderDynamicFloors() {
           </div>
         </div>
 
-        <!-- گرید ۴ کارته دکان‌ها -->
-        <div id="grid-${floorKey}" class="grid grid-cols-2 gap-2.5">
-          <!-- با تابع رندر ۴تایی پر می‌شود -->
-        </div>
+        <div id="grid-${floorKey}" class="grid grid-cols-2 gap-2.5"></div>
 
-        <!-- دکمه دیدن همه / متوقف کردن اسلایدر -->
         <div class="mt-2.5 text-center">
-          <button id="btn-toggle-${floorKey}" onclick="toggleExpandFloor('${floorKey}')" class="w-full py-2 apple-btn rounded-xl text-[11px] text-[#2997ff] font-bold">
+          <button id="btn-toggle-${floorKey}" onclick="toggleExpandFloor('${floorKey}')" class="w-full py-2 apple-btn rounded-xl text-[11px] text-[#0071e3] font-bold">
             مشاهده همه دکان‌های ${floorName} (${shopsOnFloor.length} دکان)
           </button>
         </div>
@@ -216,13 +223,11 @@ function renderDynamicFloors() {
 
   lucide.createIcons();
 
-  // اجرای رندر ۴تایی و فعال کردن تایمر ۵ ثانیه‌ای برای هر طبقه
   floorsList.forEach(floorName => {
     const floorKey = encodeURIComponent(floorName);
     const shopsOnFloor = filtered.filter(s => (s.floor || 'سایر طبقات') === floorName);
     renderFloorCards(floorKey, shopsOnFloor);
 
-    // تایمر ۵ ثانیه‌ای چرخشی
     floorIntervals[floorKey] = setInterval(() => {
       if (!floorPagination[floorKey].isExpanded && shopsOnFloor.length > 4) {
         const totalPages = Math.ceil(shopsOnFloor.length / 4);
@@ -233,7 +238,6 @@ function renderDynamicFloors() {
   });
 }
 
-// رندر ۴ کارت در حالت عادی یا همه کارت‌ها در حالت Expand
 function renderFloorCards(floorKey, shopsOnFloor) {
   const grid = document.getElementById(`grid-${floorKey}`);
   if (!grid) return;
@@ -251,19 +255,19 @@ function renderFloorCards(floorKey, shopsOnFloor) {
   }
 
   grid.innerHTML = displayShops.map(shop => `
-    <div class="apple-card p-3 rounded-2xl flex flex-col justify-between">
+    <div class="theme-card p-3 rounded-2xl flex flex-col justify-between">
       <div>
-        <div class="h-20 w-full rounded-xl bg-[#161617] mb-2 relative overflow-hidden flex items-center justify-center border border-white/[0.06]">
+        <div class="h-20 w-full rounded-xl theme-inner-box mb-2 relative overflow-hidden flex items-center justify-center">
           <span class="text-2xl">🏬</span>
-          <span class="absolute top-1.5 right-1.5 text-[9px] bg-black/80 px-1.5 py-0.5 rounded text-[#e5b869] font-bold border border-white/[0.08]">
+          <span class="absolute top-1.5 right-1.5 text-[9px] bg-black/60 text-white px-1.5 py-0.5 rounded font-bold">
             ${shop.shopNumber}
           </span>
         </div>
-        <h4 class="text-xs font-bold text-white truncate">${shop.shopName}</h4>
-        <p class="text-[10px] text-[#86868b] mt-0.5 truncate">${shop.category}</p>
+        <h4 class="text-xs font-bold truncate">${shop.shopName}</h4>
+        <p class="text-[10px] theme-subtext mt-0.5 truncate">${shop.category}</p>
       </div>
 
-      <button onclick="openShopModal(${shop.id})" class="mt-2.5 w-full py-1.5 apple-btn rounded-xl text-[10px] font-bold text-[#2997ff] flex items-center justify-center gap-1">
+      <button onclick="openShopModal(${shop.id})" class="mt-2.5 w-full py-1.5 apple-btn rounded-xl text-[10px] font-bold text-[#0071e3] flex items-center justify-center gap-1">
         <span>ورود به غرفه</span>
         <i data-lucide="chevron-left" class="w-3 h-3"></i>
       </button>
@@ -273,7 +277,6 @@ function renderFloorCards(floorKey, shopsOnFloor) {
   lucide.createIcons();
 }
 
-// کلیک روی مشاهده همه دکان‌های یک طبقه
 function toggleExpandFloor(floorKey) {
   const state = floorPagination[floorKey];
   state.isExpanded = !state.isExpanded;
@@ -291,7 +294,7 @@ function toggleExpandFloor(floorKey) {
   renderFloorCards(floorKey, shopsOnFloor);
 }
 
-// ۷. باز کردن غرفه اختصاصی دکان
+// ۶. باز کردن غرفه دکان
 function openShopModal(shopId) {
   activeShop = allShops.find(s => s.id === shopId);
   if (!activeShop) return;
@@ -306,18 +309,18 @@ function openShopModal(shopId) {
 
   const grid = document.getElementById("shop-products-grid");
   grid.innerHTML = `
-    <div class="apple-card p-3 rounded-2xl flex flex-col justify-between">
-      <div class="h-28 bg-[#161617] rounded-xl mb-2 flex items-center justify-center text-3xl">👗</div>
-      <h5 class="text-xs font-bold text-white truncate">گند سنتی دست‌دوز اصیل</h5>
-      <span class="text-xs font-bold text-[#2997ff] my-1">4,800 افغانی</span>
+    <div class="theme-card p-3 rounded-2xl flex flex-col justify-between">
+      <div class="h-28 theme-inner-box rounded-xl mb-2 flex items-center justify-center text-3xl">👗</div>
+      <h5 class="text-xs font-bold truncate">گند سنتی دست‌دوز اصیل</h5>
+      <span class="text-xs font-bold text-[#0071e3] my-1">4,800 افغانی</span>
       <button onclick="addToCart('گند دست‌دوز', 4800)" class="w-full py-2 bg-[#0071e3] text-white font-bold rounded-xl text-[10px] shadow">
         افزودن به سبد
       </button>
     </div>
-    <div class="apple-card p-3 rounded-2xl flex flex-col justify-between">
-      <div class="h-28 bg-[#161617] rounded-xl mb-2 flex items-center justify-center text-3xl">💍</div>
-      <h5 class="text-xs font-bold text-white truncate">انگشتر نقره با نگین عقیق</h5>
-      <span class="text-xs font-bold text-[#2997ff] my-1">1,900 افغانی</span>
+    <div class="theme-card p-3 rounded-2xl flex flex-col justify-between">
+      <div class="h-28 theme-inner-box rounded-xl mb-2 flex items-center justify-center text-3xl">💍</div>
+      <h5 class="text-xs font-bold truncate">انگشتر نقره با نگین عقیق</h5>
+      <span class="text-xs font-bold text-[#0071e3] my-1">1,900 افغانی</span>
       <button onclick="addToCart('انگشتر نقره', 1900)" class="w-full py-2 bg-[#0071e3] text-white font-bold rounded-xl text-[10px] shadow">
         افزودن به سبد
       </button>
@@ -336,7 +339,6 @@ function closeShopModal() {
   if (tg?.BackButton) tg.BackButton.hide();
 }
 
-// چت مستقیم
 function openChatModal() { document.getElementById("chat-modal").classList.remove("hidden"); }
 function closeChatModal() { document.getElementById("chat-modal").classList.add("hidden"); }
 function startDirectChat() {
@@ -361,7 +363,6 @@ function sendChatMessage() {
   if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
 }
 
-// سبد خرید
 function addToCart(title, price) {
   cart.push({ title, price });
   document.getElementById("cart-count").innerText = cart.length;
@@ -370,12 +371,12 @@ function addToCart(title, price) {
 function openCartModal() {
   const container = document.getElementById("cart-items");
   if (cart.length === 0) {
-    container.innerHTML = `<p class="text-xs text-[#86868b] text-center py-4">سبد خرید شما خالی است.</p>`;
+    container.innerHTML = `<p class="text-xs theme-subtext text-center py-4">سبد خرید شما خالی است.</p>`;
   } else {
     container.innerHTML = cart.map(item => `
-      <div class="flex justify-between items-center bg-white/[0.04] p-2.5 rounded-xl text-xs">
-        <span class="text-white">${item.title}</span>
-        <span class="text-[#2997ff] font-bold">${item.price} افغانی</span>
+      <div class="flex justify-between items-center theme-inner-box p-2.5 rounded-xl text-xs">
+        <span>${item.title}</span>
+        <span class="text-[#0071e3] font-bold">${item.price} افغانی</span>
       </div>
     `).join("");
   }
@@ -391,7 +392,7 @@ function finalizeOrder() {
     alert("لطفاً شماره تماس خود را وارد فرمایید.");
     return;
   }
-  alert("فرمایش شما با موفقیت ثبت شد و به دکاندار مارکت بهارسراب ارسال گردید.");
+  alert("فرمایش شما با موفقیت ثبت شد و به دکاندار مارکت بهارسراب ارجاع گردید.");
   cart = [];
   document.getElementById("cart-count").innerText = "0";
   closeCartModal();
