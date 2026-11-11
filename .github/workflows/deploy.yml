@@ -21,4 +21,4 @@ jobs:
         env:
           TGCLOUD_TOKEN: ${{ secrets.TGCLOUD_TOKEN }}
         run: |
-          npx --yes @tgcloud/bot push --token "$TGCLOUD_TOKEN"
+          npx --yes @tgcloud/cli push
