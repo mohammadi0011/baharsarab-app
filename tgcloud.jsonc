@@ -1,6 +1,6 @@
 {
   "static": {
-    "source": ".",
+    "source": "public",
     "spa": true
   }
 }
