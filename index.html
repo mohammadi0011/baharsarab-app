@@ -11,251 +11,246 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-[#000000] text-[#f5f5f7] font-['Vazirmatn'] select-none overflow-x-hidden min-h-screen flex justify-center antialiased">
+<body class="theme-bg theme-text font-['Vazirmatn'] select-none overflow-x-hidden min-h-screen flex justify-center antialiased">
 
-  <!-- کانتینر اصلی اپل‌استایل تبلتی -->
-  <div class="w-full max-w-xl md:max-w-2xl bg-[#000000] min-h-screen pb-28 relative flex flex-col border-x border-[#1d1d1f]">
+  <!-- کانتینر تبلتی شناور منطبق با تمام صفحات -->
+  <div class="w-full max-w-xl md:max-w-2xl min-h-screen relative flex flex-col theme-border-x">
 
-    <!-- ۱. هدر شیشه‌ای اپل -->
-    <header class="sticky top-0 z-40 apple-glass px-4 py-3 flex items-center justify-between border-b border-white/[0.08]">
+    <!-- ۱. هدر شیشه‌ای اپل با رعایت کامل ناچ و دکمه Close تلگرام -->
+    <header class="sticky top-0 z-40 apple-header px-4 pb-3 flex items-center justify-between theme-border-b">
       <div class="flex items-center gap-3">
-        <!-- دکمه منوی کناری اصناف -->
-        <button onclick="toggleSideMenu()" class="apple-btn p-2 rounded-xl text-white">
+        <button onclick="toggleSideMenu()" class="apple-btn p-2 rounded-xl">
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
         <div>
-          <h1 class="text-xs font-bold text-white tracking-tight flex items-center gap-1.5">
+          <h1 class="text-xs font-bold tracking-tight flex items-center gap-1.5">
             <span>مرکز تجارتی بهارسراب</span>
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
           </h1>
-          <p class="text-[10px] text-[#86868b]">دشت برچی، جاده شهید مزاری</p>
+          <p class="text-[10px] theme-subtext">دشت برچی، جاده شهید مزاری 📍</p>
         </div>
       </div>
       <div class="flex items-center gap-2">
-        <button onclick="openChatModal()" class="apple-btn p-2 rounded-xl text-[#f5f5f7]">
+        <button onclick="openChatModal()" class="apple-btn p-2 rounded-xl">
           <i data-lucide="message-circle" class="w-5 h-5"></i>
         </button>
-        <button onclick="openCartModal()" class="apple-btn p-2 rounded-xl text-[#f5f5f7] relative">
+        <button onclick="openCartModal()" class="apple-btn p-2 rounded-xl relative">
           <i data-lucide="shopping-bag" class="w-5 h-5"></i>
-          <span id="cart-count" class="absolute -top-1 -right-1 bg-[#2997ff] text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+          <span id="cart-count" class="absolute -top-1 -right-1 bg-[#0071e3] text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
         </button>
       </div>
     </header>
 
-    <!-- ۲. منوی کناری کشویی (Apple Side Drawer) -->
-    <div id="side-drawer" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xl hidden">
-      <div class="absolute right-0 top-0 bottom-0 w-72 bg-[#161617]/95 border-l border-white/[0.1] p-5 flex flex-col justify-between transform transition-transform duration-300">
+    <!-- ۲. منوی کناری کشویی (Side Drawer) با تم هوشمند -->
+    <div id="side-drawer" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-md hidden">
+      <div class="absolute right-0 top-0 bottom-0 w-72 theme-drawer p-5 flex flex-col justify-between transform transition-transform duration-300">
         <div>
-          <div class="flex items-center justify-between pb-4 border-b border-white/[0.08]">
-            <h3 class="text-sm font-bold text-white flex items-center gap-2">
-              <i data-lucide="layout-grid" class="w-4 h-4 text-[#2997ff]"></i> دسته‌بندی اصناف
+          <div class="flex items-center justify-between pb-4 theme-border-b">
+            <h3 class="text-sm font-bold flex items-center gap-2">
+              <i data-lucide="layout-grid" class="w-4 h-4 text-[#0071e3]"></i> راسته‌های تجاری
             </h3>
-            <button onclick="toggleSideMenu()" class="apple-btn p-1.5 rounded-lg text-slate-400">
+            <button onclick="toggleSideMenu()" class="apple-btn p-1.5 rounded-lg">
               <i data-lucide="x" class="w-4 h-4"></i>
             </button>
           </div>
-          <div class="mt-4 space-y-1.5" id="categories-menu-list">
-            <!-- با جاوااسکریپت پر می‌شود -->
-          </div>
+          <div class="mt-4 space-y-1.5" id="categories-menu-list"></div>
         </div>
-        <div class="text-[11px] text-[#86868b] border-t border-white/[0.08] pt-3 text-center">
-          پاساژ دیجیتال مرکز تجارتی بهارسراب
+        <div class="text-[11px] theme-subtext theme-border-t pt-3 text-center">
+          مرکز تجارتی بهارسراب • کابل
         </div>
       </div>
     </div>
 
-    <!-- ۳. اسلایدر هدر ۵ ثانیه‌ای (با قابلیت کلیک و فیلتر کردن) -->
+    <!-- ۳. اسلایدر هدر ۵ ثانیه‌ای اپل‌استایل -->
     <section class="px-4 mt-3">
-      <div class="relative overflow-hidden rounded-2xl h-44 border border-white/[0.1] apple-card">
-        <div id="hero-slider" class="flex transition-transform duration-700 ease-out h-full cursor-pointer">
-          <!-- اسلایدها با ۵ ثانیه -->
-        </div>
+      <div class="relative overflow-hidden rounded-2xl h-44 theme-card shadow-lg">
+        <div id="hero-slider" class="flex transition-transform duration-700 ease-out h-full cursor-pointer"></div>
         <div id="slider-dots" class="absolute bottom-2.5 left-0 right-0 flex justify-center gap-1.5 z-10"></div>
       </div>
     </section>
 
-    <!-- ۴. نوار جستجو و فیلتر فعال -->
+    <!-- ۴. نوار جستجو (بدون زوم در موبایل) -->
     <div class="px-4 mt-3 flex items-center gap-2">
-      <div class="apple-input-wrapper flex items-center px-3.5 py-2.5 rounded-2xl border border-white/[0.08] gap-2.5 flex-1">
-        <i data-lucide="search" class="w-4 h-4 text-[#86868b]"></i>
-        <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="جستجوی دکان یا نام جنس..." class="no-zoom bg-transparent border-none outline-none w-full text-white placeholder-[#86868b]">
+      <div class="apple-input-wrapper flex items-center px-3.5 py-2.5 rounded-2xl gap-2.5 flex-1">
+        <i data-lucide="search" class="w-4 h-4 theme-subtext"></i>
+        <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="جستجوی دکان یا نام جنس..." class="no-zoom bg-transparent border-none outline-none w-full theme-text placeholder:opacity-50">
       </div>
-      <button id="clear-filter-btn" onclick="clearCategoryFilter()" class="hidden apple-btn px-3 py-2.5 rounded-2xl text-xs text-[#2997ff] border border-[#2997ff]/30">
+      <button id="clear-filter-btn" onclick="clearCategoryFilter()" class="hidden apple-btn px-3 py-2.5 rounded-2xl text-xs text-[#0071e3] font-bold">
         همه
       </button>
     </div>
 
-    <!-- ۵. کانتینر طبقات خودکار با ویترین ۴تایی چرخشی ۵ ثانیه‌ای -->
+    <!-- ۵. طبقات و ویترین دکان‌ها (۴ تایی چرخشی ۵ ثانیه‌ای) -->
     <main id="floors-container" class="px-4 mt-6 space-y-8">
-      <!-- طبقات و دکان‌ها کاملاً اتوماتیک اینجا تزریق می‌شوند -->
+      <!-- به صورت خودکار لود می‌شود -->
     </main>
 
-    <!-- ۶. امکانات رفاهی مرکز بهارسراب (Apple Style Cards) -->
-    <section class="px-4 mt-10 border-t border-white/[0.08] pt-6">
+    <!-- ۶. بخش امکانات رفاهی مرکز بهارسراب -->
+    <section class="px-4 mt-10 theme-border-t pt-6">
       <div class="flex items-center justify-between mb-3.5">
-        <h3 class="text-xs font-bold text-[#f5f5f7] flex items-center gap-1.5">
-          <i data-lucide="sparkles" class="w-4 h-4 text-[#e5b869]"></i> امکانات مرکز تجارتی بهارسراب
+        <h3 class="text-xs font-bold flex items-center gap-1.5">
+          <i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i> امکانات مرکز تجارتی بهارسراب
         </h3>
-        <span class="text-[10px] text-[#86868b]">استاندارد روز کابل</span>
+        <span class="text-[10px] theme-subtext bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-md">استاندارد برتر غرب کابل</span>
       </div>
 
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-        <div class="apple-card p-3 rounded-2xl">
-          <i data-lucide="car" class="w-4 h-4 text-[#2997ff] mb-1.5"></i>
-          <h4 class="text-xs font-bold text-white">پارکینگ اختصاصی</h4>
-          <p class="text-[10px] text-[#86868b] mt-0.5">سرپوشیده با ظرفیت بالا</p>
+        <div class="theme-card p-3 rounded-2xl">
+          <i data-lucide="car" class="w-4 h-4 text-[#0071e3] mb-1.5"></i>
+          <h4 class="text-xs font-bold">پارکینگ اختصاصی</h4>
+          <p class="text-[10px] theme-subtext mt-0.5">سرپوشیده با گنجایش بالا</p>
         </div>
-        <div class="apple-card p-3 rounded-2xl">
-          <i data-lucide="arrow-up-down" class="w-4 h-4 text-emerald-400 mb-1.5"></i>
-          <h4 class="text-xs font-bold text-white">لفت‌های شیشه‌ای</h4>
-          <p class="text-[10px] text-[#86868b] mt-0.5">آسانسورهای مدرن و پله‌برقی</p>
+        <div class="theme-card p-3 rounded-2xl">
+          <i data-lucide="arrow-up-down" class="w-4 h-4 text-emerald-500 mb-1.5"></i>
+          <h4 class="text-xs font-bold">لفت‌های شیشه‌ای</h4>
+          <p class="text-[10px] theme-subtext mt-0.5">آسانسور و پله‌برقی مدرن</p>
         </div>
-        <div class="apple-card p-3 rounded-2xl">
-          <i data-lucide="utensils" class="w-4 h-4 text-rose-400 mb-1.5"></i>
-          <h4 class="text-xs font-bold text-white">رستورانت بام</h4>
-          <p class="text-[10px] text-[#86868b] mt-0.5">کباب‌های افغانی و فست‌فود</p>
+        <div class="theme-card p-3 rounded-2xl">
+          <i data-lucide="utensils" class="w-4 h-4 text-rose-500 mb-1.5"></i>
+          <h4 class="text-xs font-bold">رستورانت خانوادگی</h4>
+          <p class="text-[10px] theme-subtext mt-0.5">کباب‌های اصیل در طبقه سوم</p>
         </div>
-        <div class="apple-card p-3 rounded-2xl">
-          <i data-lucide="zap" class="w-4 h-4 text-amber-400 mb-1.5"></i>
-          <h4 class="text-xs font-bold text-white">برق سولار ۲۴ ساعته</h4>
-          <p class="text-[10px] text-[#86868b] mt-0.5">پنل خورشیدی و جنراتور</p>
+        <div class="theme-card p-3 rounded-2xl">
+          <i data-lucide="zap" class="w-4 h-4 text-amber-500 mb-1.5"></i>
+          <h4 class="text-xs font-bold">برق ۲۴ ساعته</h4>
+          <p class="text-[10px] theme-subtext mt-0.5">مجهز به سیستم سولار و جنراتور</p>
         </div>
-        <div class="apple-card p-3 rounded-2xl">
-          <i data-lucide="shield-check" class="w-4 h-4 text-blue-400 mb-1.5"></i>
-          <h4 class="text-xs font-bold text-white">امنیت و کمره CCTV</h4>
-          <p class="text-[10px] text-[#86868b] mt-0.5">حفاظت دائمی مارکت</p>
+        <div class="theme-card p-3 rounded-2xl">
+          <i data-lucide="shield-check" class="w-4 h-4 text-blue-500 mb-1.5"></i>
+          <h4 class="text-xs font-bold">امنیت و کمره CCTV</h4>
+          <p class="text-[10px] theme-subtext mt-0.5">حفاظت دائمی مارکت</p>
         </div>
-        <div class="apple-card p-3 rounded-2xl">
-          <i data-lucide="plane" class="w-4 h-4 text-purple-400 mb-1.5"></i>
-          <h4 class="text-xs font-bold text-white">کارگو و صرافی</h4>
-          <p class="text-[10px] text-[#86868b] mt-0.5">ارسال کالا و تبادله اسعار</p>
+        <div class="theme-card p-3 rounded-2xl">
+          <i data-lucide="plane" class="w-4 h-4 text-purple-500 mb-1.5"></i>
+          <h4 class="text-xs font-bold">کارگو و صرافی</h4>
+          <p class="text-[10px] theme-subtext mt-0.5">ارسال کالا و حواله‌جات در تهکوی</p>
         </div>
       </div>
     </section>
 
-    <!-- ۷. مودال نمای اختصاصی غرفه دکان (Shop View) -->
-    <div id="shop-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-2xl hidden overflow-y-auto">
+    <!-- ۷. مودال نمای اختصاصی غرفه دکان -->
+    <div id="shop-modal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-xl hidden overflow-y-auto safe-top safe-bottom">
       <div class="min-h-screen max-w-xl md:max-w-2xl mx-auto px-4 py-6">
         <div class="flex items-center justify-between mb-4">
-          <button onclick="closeShopModal()" class="apple-btn px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 text-white">
+          <button onclick="closeShopModal()" class="apple-btn px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5">
             <i data-lucide="arrow-right" class="w-4 h-4"></i> بازگشت
           </button>
-          <span class="text-[11px] text-[#2997ff] bg-[#2997ff]/10 px-2 py-0.5 rounded-lg border border-[#2997ff]/20">
+          <span class="text-[11px] text-[#0071e3] bg-[#0071e3]/10 px-2 py-0.5 rounded-lg">
             غرفه معتبر
           </span>
         </div>
 
-        <div class="apple-card p-4 rounded-2xl border border-white/[0.1] mb-5">
+        <div class="theme-card p-4 rounded-2xl mb-5">
           <div class="flex gap-3 items-center">
-            <div class="w-14 h-14 rounded-xl bg-[#1d1d1f] flex items-center justify-center text-2xl border border-white/[0.1]">
+            <div class="w-14 h-14 rounded-xl theme-inner-box flex items-center justify-center text-2xl">
               🏬
             </div>
             <div>
-              <h2 id="modal-shop-name" class="text-sm font-bold text-white"></h2>
-              <p id="modal-shop-location" class="text-xs text-[#86868b] mt-0.5"></p>
-              <span id="modal-shop-cat" class="inline-block mt-1 text-[10px] bg-white/[0.08] px-2 py-0.5 rounded text-slate-300"></span>
+              <h2 id="modal-shop-name" class="text-sm font-bold"></h2>
+              <p id="modal-shop-location" class="text-xs theme-subtext mt-0.5"></p>
+              <span id="modal-shop-cat" class="inline-block mt-1 text-[10px] theme-chip px-2 py-0.5 rounded"></span>
             </div>
           </div>
-          <div class="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-white/[0.08]">
-            <a id="btn-call" href="#" class="apple-btn py-2 rounded-xl text-center text-xs flex items-center justify-center gap-1 text-emerald-400">
+          <div class="grid grid-cols-3 gap-2 mt-4 pt-3 theme-border-t">
+            <a id="btn-call" href="#" class="apple-btn py-2 rounded-xl text-center text-xs flex items-center justify-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold">
               <i data-lucide="phone" class="w-3.5 h-3.5"></i> تماس
             </a>
-            <a id="btn-wa" href="#" target="_blank" class="apple-btn py-2 rounded-xl text-center text-xs flex items-center justify-center gap-1 text-emerald-400">
+            <a id="btn-wa" href="#" target="_blank" class="apple-btn py-2 rounded-xl text-center text-xs flex items-center justify-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold">
               <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> واتساپ
             </a>
-            <button onclick="startDirectChat()" class="apple-btn py-2 rounded-xl text-center text-xs flex items-center justify-center gap-1 text-[#2997ff]">
+            <button onclick="startDirectChat()" class="apple-btn py-2 rounded-xl text-center text-xs flex items-center justify-center gap-1 text-[#0071e3] font-bold">
               <i data-lucide="send" class="w-3.5 h-3.5"></i> چت آنلاین
             </button>
           </div>
         </div>
 
-        <h3 class="text-xs font-bold text-[#86868b] mb-3 flex items-center gap-1.5">
-          <i data-lucide="grid" class="w-3.5 h-3.5 text-[#2997ff]"></i> اجناس این غرفه
+        <h3 class="text-xs font-bold theme-subtext mb-3 flex items-center gap-1.5">
+          <i data-lucide="grid" class="w-3.5 h-3.5 text-[#0071e3]"></i> اجناس این غرفه
         </h3>
         <div id="shop-products-grid" class="grid grid-cols-2 gap-3"></div>
       </div>
     </div>
 
     <!-- ۸. مودال چت زنده داخل مینی‌اپ -->
-    <div id="chat-modal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl hidden flex justify-center">
-      <div class="w-full max-w-xl md:max-w-2xl h-full flex flex-col">
-        <div class="apple-glass p-3 flex items-center justify-between border-b border-white/[0.08]">
+    <div id="chat-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-2xl hidden flex justify-center safe-top safe-bottom">
+      <div class="w-full max-w-xl md:max-w-2xl h-full flex flex-col theme-bg">
+        <div class="apple-header p-3 flex items-center justify-between theme-border-b">
           <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-full bg-[#2997ff]/20 text-[#2997ff] flex items-center justify-center">
+            <div class="w-8 h-8 rounded-full bg-[#0071e3]/15 text-[#0071e3] flex items-center justify-center">
               <i data-lucide="messages-square" class="w-4 h-4"></i>
             </div>
             <div>
-              <h4 id="chat-target-name" class="text-xs font-bold text-white">پشتیبانی بهارسراب</h4>
-              <span class="text-[9px] text-emerald-400">آنلاین</span>
+              <h4 id="chat-target-name" class="text-xs font-bold">پشتیبانی بهارسراب</h4>
+              <span class="text-[9px] text-emerald-500">پاسخگوی آنلاین</span>
             </div>
           </div>
-          <button onclick="closeChatModal()" class="apple-btn p-1.5 rounded-lg text-slate-400">
+          <button onclick="closeChatModal()" class="apple-btn p-1.5 rounded-lg">
             <i data-lucide="x" class="w-4 h-4"></i>
           </button>
         </div>
         <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3">
           <div class="flex gap-2">
-            <div class="apple-card max-w-[80%] p-3 rounded-2xl rounded-tr-none text-xs leading-relaxed text-[#f5f5f7]">
-              سلام! به گفتگوی مستقیم مرکز بهارسراب خوش آمدید. پیام شما برای دکاندار فرستاده می‌شود.
+            <div class="theme-card max-w-[80%] p-3 rounded-2xl rounded-tr-none text-xs leading-relaxed">
+              سلام! به پیام‌رسان بهارسراب خوش آمدید. پیام شما مستقیماً برای دکاندار ارسال خواهد شد.
             </div>
           </div>
         </div>
-        <div class="p-3 apple-glass border-t border-white/[0.08] flex gap-2">
-          <input type="text" id="chat-input" placeholder="پیام خود را بنویسید..." class="no-zoom bg-white/[0.06] border border-white/[0.1] rounded-xl px-3 py-2 text-white outline-none focus:border-[#2997ff] flex-1">
-          <button onclick="sendChatMessage()" class="apple-btn px-4 bg-[#2997ff] text-white rounded-xl flex items-center justify-center font-bold">
+        <div class="p-3 apple-header theme-border-t flex gap-2">
+          <input type="text" id="chat-input" placeholder="پیام خود را بنویسید..." class="no-zoom apple-input-wrapper rounded-xl px-3 py-2 outline-none w-full text-xs">
+          <button onclick="sendChatMessage()" class="apple-btn px-4 bg-[#0071e3] text-white rounded-xl flex items-center justify-center font-bold">
             <i data-lucide="send" class="w-4 h-4"></i>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- ۹. مودال سبد خرید (Bottom Sheet) -->
-    <div id="cart-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl hidden flex items-end justify-center">
-      <div class="w-full max-w-xl md:max-w-2xl apple-card border-t border-white/[0.15] rounded-t-3xl p-5 max-h-[85vh] overflow-y-auto">
-        <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-          <h3 class="text-sm font-bold flex items-center gap-1.5 text-white">
-            <i data-lucide="shopping-cart" class="w-4 h-4 text-[#2997ff]"></i> سبد فرمایشات
+    <!-- ۹. مودال سبد خرید و فاکتور -->
+    <div id="cart-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-md hidden flex items-end justify-center safe-bottom">
+      <div class="w-full max-w-xl md:max-w-2xl theme-card border-t theme-border rounded-t-3xl p-5 max-h-[85vh] overflow-y-auto">
+        <div class="flex items-center justify-between pb-3 theme-border-b">
+          <h3 class="text-sm font-bold flex items-center gap-1.5">
+            <i data-lucide="shopping-cart" class="w-4 h-4 text-[#0071e3]"></i> سبد فرمایشات
           </h3>
-          <button onclick="closeCartModal()" class="text-slate-400 hover:text-white">
+          <button onclick="closeCartModal()" class="theme-subtext">
             <i data-lucide="x" class="w-5 h-5"></i>
           </button>
         </div>
         <div id="cart-items" class="py-3 space-y-2"></div>
         <div class="space-y-2.5 mt-2">
-          <input type="tel" id="order-phone" placeholder="شماره تماس خریدار (07xxxxxxxx)" class="no-zoom w-full bg-white/[0.06] border border-white/[0.1] rounded-xl p-3 text-white outline-none focus:border-[#2997ff]">
-          <select id="order-delivery" class="no-zoom w-full bg-[#161617] border border-white/[0.1] rounded-xl p-3 text-white outline-none">
+          <input type="tel" id="order-phone" placeholder="شماره تماس خریدار (07xxxxxxxx)" class="no-zoom w-full apple-input-wrapper rounded-xl p-3 outline-none">
+          <select id="order-delivery" class="no-zoom w-full apple-input-wrapper rounded-xl p-3 outline-none">
             <option value="store">تحویل حضوری در دکان مارکت بهارسراب</option>
             <option value="delivery_barchi">ارسال با پیک در دشت برچی (۵۰ افغانی)</option>
             <option value="delivery_kabul">ارسال در تمام نقاط کابل (۱۵۰ افغانی)</option>
             <option value="cargo">ارسال با کارگو به خارج از کشور</option>
           </select>
-          <div class="flex justify-between items-center py-2 text-xs font-bold border-t border-white/[0.08]">
+          <div class="flex justify-between items-center py-2 text-xs font-bold theme-border-t">
             <span>مجموع نهایی:</span>
-            <span id="cart-total-price" class="text-[#2997ff] text-sm font-bold">۰ افغانی</span>
+            <span id="cart-total-price" class="text-[#0071e3] text-sm font-bold">۰ افغانی</span>
           </div>
-          <button onclick="finalizeOrder()" class="w-full py-3.5 bg-[#0071e3] hover:bg-[#0077ed] text-white rounded-xl font-bold text-xs shadow-lg active:scale-[0.98] transition">
+          <button onclick="finalizeOrder()" class="w-full py-3.5 bg-[#0071e3] text-white rounded-xl font-bold text-xs shadow-lg active:scale-[0.98] transition">
             ثبت نهایی فرمایش
           </button>
         </div>
       </div>
     </div>
 
-    <!-- ۱۰. نوار ناوبری اپل فلوتینگ پایین صفحه -->
-    <nav class="fixed bottom-0 left-0 right-0 z-40 flex justify-center px-4 pb-3 pointer-events-none">
-      <div class="w-full max-w-xl md:max-w-2xl apple-glass rounded-2xl border border-white/[0.12] px-6 py-2.5 flex justify-between items-center shadow-2xl pointer-events-auto">
-        <button onclick="location.reload()" class="nav-btn flex flex-col items-center gap-1 text-[11px] text-[#2997ff] font-bold">
+    <!-- ۱۰. نوار ناوبری فلوتینگ پایین صفحه (منطبق بر Home Bar آیفون) -->
+    <nav class="fixed bottom-0 left-0 right-0 z-40 flex justify-center px-4 apple-nav-wrapper pointer-events-none">
+      <div class="w-full max-w-xl md:max-w-2xl apple-header rounded-2xl theme-border px-6 py-2.5 flex justify-between items-center shadow-2xl pointer-events-auto">
+        <button onclick="location.reload()" class="nav-btn flex flex-col items-center gap-1 text-[11px] text-[#0071e3] font-bold">
           <i data-lucide="store" class="w-5 h-5"></i>
           <span>مارکت</span>
         </button>
-        <button onclick="toggleSideMenu()" class="nav-btn flex flex-col items-center gap-1 text-[11px] text-[#86868b] hover:text-white">
+        <button onclick="toggleSideMenu()" class="nav-btn flex flex-col items-center gap-1 text-[11px] theme-subtext">
           <i data-lucide="layout-grid" class="w-5 h-5"></i>
           <span>اصناف</span>
         </button>
-        <button onclick="openChatModal()" class="nav-btn flex flex-col items-center gap-1 text-[11px] text-[#86868b] hover:text-white">
+        <button onclick="openChatModal()" class="nav-btn flex flex-col items-center gap-1 text-[11px] theme-subtext">
           <i data-lucide="message-square" class="w-5 h-5"></i>
           <span>پیام‌ها</span>
         </button>
-        <button onclick="openCartModal()" class="nav-btn flex flex-col items-center gap-1 text-[11px] text-[#86868b] hover:text-white">
+        <button onclick="openCartModal()" class="nav-btn flex flex-col items-center gap-1 text-[11px] theme-subtext">
           <i data-lucide="shopping-bag" class="w-5 h-5"></i>
           <span>سبد خرید</span>
         </button>
