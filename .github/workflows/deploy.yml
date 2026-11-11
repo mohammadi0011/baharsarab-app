@@ -17,8 +17,12 @@ jobs:
         with:
           node-version: 20
 
-      - name: Push to Telegram Serverless
+      - name: Create Public Folder and Push
         env:
           TGCLOUD_TOKEN: ${{ secrets.TGCLOUD_TOKEN }}
         run: |
+          mkdir -p public
+          cp -f index.html public/
+          cp -rf css public/
+          cp -rf js public/
           npx --yes @tgcloud/cli push
