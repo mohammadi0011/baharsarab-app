@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 20
 
-      - name: Create Public Folder and Push
+      - name: Sync and Push
         env:
           TGCLOUD_TOKEN: ${{ secrets.TGCLOUD_TOKEN }}
         run: |
@@ -25,4 +25,5 @@ jobs:
           cp -f index.html public/
           cp -rf css public/
           cp -rf js public/
+          npx --yes @tgcloud/cli fetch
           npx --yes @tgcloud/cli push
