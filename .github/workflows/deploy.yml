@@ -17,13 +17,19 @@ jobs:
         with:
           node-version: 20
 
-      - name: Sync and Push
+      - name: Deploy Mini App only
         env:
           TGCLOUD_TOKEN: ${{ secrets.TGCLOUD_TOKEN }}
         run: |
+          # آماده‌سازی فایل‌های مینی‌اپ
+          rm -rf public
           mkdir -p public
           cp -f index.html public/
           cp -rf css public/
           cp -rf js public/
+
+          # هماهنگ کردن وضعیت (فایل‌های محلی را تغییر نمی‌دهد)
           npx --yes @tgcloud/cli fetch
-          npx --yes @tgcloud/cli push
+
+          # فقط استاتیک‌ها را بفرست؛ handlers/endpoints/lib/db دست‌نخورده می‌مانند
+          npx --yes @tgcloud/cli push public/
