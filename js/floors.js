@@ -1,22 +1,22 @@
-let allShops = [];
-let allBanners = [];
-let floorPagination = {};
-let floorIntervals = {};
+let allShops = [], allBanners = [], floorState = {}, floorTimers = {};
 
+// لیست کامل طبقات واقعی مرکز بهارسراب
+const standardFloors = [
+  "طبقه همکف", "طبقه اول", "طبقه دوم", "طبقه سوم",
+  "طبقه چهارم", "طبقه پنجم", "طبقه هفتم (رستورانت و بام)", "تهکوی (زیرزمین)"
+];
+
+// دریافت اطلاعات دکان‌ها و بنرها
 async function loadShopsData() {
   const container = document.getElementById("floors-container");
-  container.innerHTML = `<div class="apple-card p-6 text-center text-xs theme-subtext">در حال بارگذاری مرکز تجارتی بهارسراب...</div>`;
+  container.innerHTML = `<div class="apple-card p-6 text-center text-xs theme-subtext">در حال بارگذاری مرکز بهارسراب...</div>`;
 
-  if (window.Telegram?.WebApp?.Serverless) {
-    window.Telegram.WebApp.Serverless.call('getShops', {}, (err, res) => {
-      if (!err && res?.data && res.data.length > 0) {
-        allShops = res.data;
-        allBanners = res.banners || [];
-        renderDynamicFloors();
-      } else {
-        allShops = defaultShopsData;
-        renderDynamicFloors();
-      }
+  const twa = window.Telegram?.WebApp?.Serverless;
+  if (twa) {
+    twa.call('getShops', {}, (err, res) => {
+      allShops = (!err && res?.data?.length) ? res.data : defaultShopsData;
+      allBanners = res?.banners || [];
+      renderDynamicFloors();
     });
   } else {
     allShops = defaultShopsData;
@@ -24,210 +24,124 @@ async function loadShopsData() {
   }
 }
 
+// ساخت و چیدمان طبقات
 function renderDynamicFloors() {
   const container = document.getElementById("floors-container");
-  Object.values(floorIntervals).forEach(clearInterval);
-  floorIntervals = {};
+  Object.values(floorTimers).forEach(clearInterval);
+  floorTimers = {};
 
-  let filtered = allShops;
-  if (currentFilter) {
-    filtered = allShops.filter(s => s.category?.includes(currentFilter) || s.shopName?.includes(currentFilter));
-  }
+  const filtered = currentFilter ? allShops.filter(s => s.category?.includes(currentFilter) || s.shopName?.includes(currentFilter)) : allShops;
 
-  // طبقات به صورت استاندارد بهارسراب
-  const standardFloors = ["طبقه همکف", "طبقه اول", "طبقه دوم", "طبقه سوم", "تهکوی (زیرزمین)"];
-
-  container.innerHTML = standardFloors.map(floorName => {
-    const activeShopsOnFloor = filtered.filter(s => s.floor === floorName);
-    const floorKey = encodeURIComponent(floorName);
-    const floorBanners = allBanners.filter(b => b.floor === floorName);
-
-    if (!floorPagination[floorKey]) {
-      floorPagination[floorKey] = { page: 0, isExpanded: false };
-    }
+  container.innerHTML = standardFloors.map(floor => {
+    const shops = filtered.filter(s => s.floor === floor);
+    const banners = allBanners.filter(b => b.floor === floor);
+    const key = encodeURIComponent(floor);
+    if (!floorState[key]) floorState[key] = { page: 0, expanded: false };
 
     return `
-      <section class="animate-fade-in" id="floor-sec-${floorKey}">
-        <div class="flex items-center justify-between mb-2">
-          <h3 class="text-xs font-bold flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-[#0071e3]"></span>
-            ${floorName} <span class="text-[10px] theme-subtext font-normal">(${activeShopsOnFloor.length} دکان فعال)</span>
-          </h3>
+      <section class="animate-fade-in" id="sec-${key}">
+        <div class="flex justify-between items-center mb-2">
+          <h3 class="text-xs font-bold flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-[#0071e3]"></span>${floor} (${shops.length} دکان فعال)</h3>
           <span class="text-[10px] theme-subtext">بهارسراب</span>
         </div>
-
-        <!-- اسلایدر بنرهای طراحی‌شده طبقه با لینک مستقیم به دکان -->
+        
+        <!-- اسلایدر بنرها با لینک به دکان -->
         <div class="relative overflow-hidden rounded-2xl h-28 mb-3 theme-card shadow-sm border border-white/10">
-          <div id="floor-slider-${floorKey}" class="flex transition-transform duration-500 h-full">
-            ${Array.from({ length: 10 }).map((_, i) => {
-              const customBanner = floorBanners.find(b => b.slotNumber === (i + 1));
-              if (customBanner) {
-                return `
-                  <div onclick="openShopModal(${customBanner.shopId})" class="min-w-full h-full cursor-pointer relative overflow-hidden bg-slate-900">
-                    <img src="https://api.telegram.org/file/bot${CONFIG.MINI_APP_BOT_USERNAME}/${customBanner.imageFileId}" 
-                         class="w-full h-full object-cover" 
-                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80';">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
-                      <span class="text-[10px] bg-[#0071e3] text-white px-2 py-0.5 rounded font-bold">ویژه • لمس جهت ورود به غرفه</span>
-                    </div>
-                  </div>
-                `;
-              } else {
-                return `
-                  <div class="min-w-full h-full flex items-center justify-between px-4 bg-gradient-to-r from-slate-900 to-black">
-                    <div>
-                      <span class="text-[9px] text-amber-500 font-bold">جایگاه تبلیغات • اسلاید ${i + 1} از ۱۰</span>
-                      <h4 class="text-xs font-bold mt-0.5">${floorName} - ویترین دکان‌های برتر</h4>
-                      <p class="text-[10px] theme-subtext">رزرو تبلیغات با مدیریت مارکت (@Akh_Aurora)</p>
-                    </div>
-                    <span class="text-2xl">✨</span>
-                  </div>
-                `;
-              }
-            }).join('')}
+          <div id="slider-${key}" class="flex transition-transform duration-500 h-full">
+            ${Array.from({ length: 10 }).map((_, i) => renderBannerSlide(banners, i + 1, floor)).join('')}
           </div>
         </div>
 
-        <!-- گرید دکان‌ها: ۴ تای اول در چرخش، بقیه در حالت دیدن همه -->
-        <div id="grid-${floorKey}" class="grid grid-cols-2 gap-2.5"></div>
-
-        <div class="mt-2.5 text-center">
-          <button id="btn-toggle-${floorKey}" onclick="toggleExpandFloor('${floorKey}')" class="w-full py-2 apple-btn rounded-xl text-[11px] text-[#0071e3] font-bold">
-            مشاهده همه دکان‌های ${floorName} (دکان‌های فعال + خالی)
-          </button>
-        </div>
-      </section>
-    `;
+        <div id="grid-${key}" class="grid grid-cols-2 gap-2.5"></div>
+        
+        <button id="btn-${key}" onclick="toggleFloor('${key}')" class="w-full mt-2.5 py-2 apple-btn rounded-xl text-[11px] text-[#0071e3] font-bold">
+          مشاهده همه دکان‌های ${floor}
+        </button>
+      </section>`;
   }).join('');
 
   lucide.createIcons();
 
-  standardFloors.forEach(floorName => {
-    const floorKey = encodeURIComponent(floorName);
-    const activeShopsOnFloor = filtered.filter(s => s.floor === floorName);
-    renderFloorCards(floorKey, activeShopsOnFloor, floorName);
+  // فعال‌سازی چرخش خودکار ۵ ثانیه‌ای ۴ تایی
+  standardFloors.forEach(floor => {
+    const key = encodeURIComponent(floor);
+    const shops = filtered.filter(s => s.floor === floor);
+    renderCards(key, shops, floor);
 
-    floorIntervals[floorKey] = setInterval(() => {
-      if (!floorPagination[floorKey].isExpanded && activeShopsOnFloor.length > 4) {
-        const totalPages = Math.ceil(activeShopsOnFloor.length / 4);
-        floorPagination[floorKey].page = (floorPagination[floorKey].page + 1) % totalPages;
-        renderFloorCards(floorKey, activeShopsOnFloor, floorName);
+    floorTimers[key] = setInterval(() => {
+      const state = floorState[key];
+      if (!state.expanded && shops.length > 4) {
+        state.page = (state.page + 1) % Math.ceil(shops.length / 4);
+        renderCards(key, shops, floor);
       }
     }, 5000);
   });
 }
 
-function renderFloorCards(floorKey, activeShops, floorName) {
-  const grid = document.getElementById(`grid-${floorKey}`);
-  if (!grid) return;
-
-  const state = floorPagination[floorKey];
-
-  // در حالت بسته (اسلایدی): فقط ۴ دکان فعال با اولویت
-  if (!state.isExpanded) {
-    const start = state.page * 4;
-    const pageShops = activeShops.slice(start, start + 4);
-
-    grid.innerHTML = pageShops.map(shop => `
-      <div class="theme-card p-3 rounded-2xl flex flex-col justify-between">
-        <div>
-          <div class="h-20 w-full rounded-xl theme-inner-box mb-2 relative overflow-hidden flex items-center justify-center">
-            <span class="text-2xl">🏬</span>
-            <span class="absolute top-1.5 right-1.5 text-[9px] bg-black/60 text-white px-1.5 py-0.5 rounded font-bold">
-              ${shop.shopNumber}
-            </span>
-          </div>
-          <h4 class="text-xs font-bold truncate">${shop.shopName}</h4>
-          <p class="text-[10px] theme-subtext mt-0.5 truncate">${shop.category}</p>
-        </div>
-
-        <button onclick="openShopModal(${shop.id})" class="mt-2.5 w-full py-1.5 apple-btn rounded-xl text-[10px] font-bold text-[#0071e3] flex items-center justify-center gap-1">
-          <span>ورود به غرفه</span>
-          <i data-lucide="chevron-left" class="w-3 h-3"></i>
-        </button>
-      </div>
-    `).join('');
-  } 
-  // در حالت «مشاهده همه»: ابتدا تمام دکان‌های فعال، سپس دکان‌های خالی آماده رزرو
-  else {
-    const defaultNumbers = baharSarabFloorPlan[floorName] || [];
-    const activeShopNumbers = activeShops.map(s => s.shopNumber);
-    const vacantNumbers = defaultNumbers.filter(num => !activeShopNumbers.includes(num));
-
-    const activeHtml = activeShops.map(shop => `
-      <div class="theme-card p-3 rounded-2xl flex flex-col justify-between border-emerald-500/30">
-        <div>
-          <div class="h-20 w-full rounded-xl theme-inner-box mb-2 relative overflow-hidden flex items-center justify-center">
-            <span class="text-2xl">🏬</span>
-            <span class="absolute top-1.5 right-1.5 text-[9px] bg-emerald-600 text-white px-1.5 py-0.5 rounded font-bold">
-              دکان فعال ${shop.shopNumber}
-            </span>
-          </div>
-          <h4 class="text-xs font-bold truncate">${shop.shopName}</h4>
-          <p class="text-[10px] theme-subtext mt-0.5 truncate">${shop.category}</p>
-        </div>
-
-        <button onclick="openShopModal(${shop.id})" class="mt-2.5 w-full py-1.5 apple-btn rounded-xl text-[10px] font-bold text-[#0071e3] flex items-center justify-center gap-1">
-          <span>ورود به غرفه</span>
-          <i data-lucide="chevron-left" class="w-3 h-3"></i>
-        </button>
-      </div>
-    `).join('');
-
-    const vacantHtml = vacantNumbers.map(num => `
-      <div class="theme-card p-3 rounded-2xl flex flex-col justify-between opacity-70 border-dashed border-white/20">
-        <div>
-          <div class="h-20 w-full rounded-xl theme-inner-box mb-2 relative overflow-hidden flex items-center justify-center">
-            <span class="text-2xl opacity-40">🚪</span>
-            <span class="absolute top-1.5 right-1.5 text-[9px] bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded font-mono">
-              ${num}
-            </span>
-          </div>
-          <h4 class="text-xs font-bold text-slate-400">دکان خالی شماره ${num}</h4>
-          <p class="text-[10px] text-amber-500/90 mt-0.5">آماده واگذاری و رزرو</p>
-        </div>
-
-        <a href="https://t.me/${CONFIG.MINI_APP_BOT_USERNAME}?start=register" class="mt-2.5 w-full py-1.5 apple-btn rounded-xl text-[10px] font-bold text-slate-300 flex items-center justify-center gap-1">
-          <span>رزرو این دکان</span>
-          <i data-lucide="plus" class="w-3 h-3"></i>
-        </a>
-      </div>
-    `).join('');
-
-    grid.innerHTML = activeHtml + vacantHtml;
+// ساخت اسلایدهای بنر
+function renderBannerSlide(banners, slot, floor) {
+  const b = banners.find(x => x.slotNumber === slot);
+  if (b) {
+    return `<div onclick="openShopModal(${b.shopId})" class="min-w-full h-full cursor-pointer relative bg-slate-900">
+      <img src="https://api.telegram.org/file/bot${CONFIG.MINI_APP_BOT_USERNAME}/${b.imageFileId}" class="w-full h-full object-cover">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/80 flex items-end p-2.5"><span class="text-[9px] bg-[#0071e3] text-white px-1.5 py-0.5 rounded font-bold">ویژه • لمس جهت ورود</span></div>
+    </div>`;
   }
+  return `<div class="min-w-full h-full flex items-center justify-between px-4 bg-gradient-to-r from-slate-900 to-black">
+    <div><span class="text-[9px] text-amber-500 font-bold">جایگاه ${slot} از ۱۰</span><h4 class="text-xs font-bold mt-0.5">${floor}</h4><p class="text-[10px] theme-subtext">رزرو بنر با مدیریت مارکت</p></div>
+    <span class="text-xl">✨</span>
+  </div>`;
+}
 
+// ساخت کارت‌های دکان (حالت چرخش ۴ تایی یا مشاهده همه)
+function renderCards(key, activeShops, floor) {
+  const grid = document.getElementById(`grid-${key}`);
+  if (!grid) return;
+  const state = floorState[key];
+
+  if (!state.expanded) {
+    const pageShops = activeShops.slice(state.page * 4, state.page * 4 + 4);
+    grid.innerHTML = pageShops.map(s => shopCardHtml(s, false)).join('');
+  } else {
+    const plan = baharSarabFloorPlan[floor] || [];
+    const activeNums = activeShops.map(s => s.shopNumber);
+    const vacants = plan.filter(num => !activeNums.includes(num));
+    
+    grid.innerHTML = activeShops.map(s => shopCardHtml(s, true)).join('') + 
+      vacants.map(num => `
+        <div class="theme-card p-2.5 rounded-2xl opacity-60 border-dashed border-white/20 flex flex-col justify-between">
+          <div><div class="h-16 rounded-xl theme-inner-box flex items-center justify-center text-xl">🚪</div><h4 class="text-[11px] font-bold mt-1 text-slate-400">دکان خالی ${num}</h4><p class="text-[9px] text-amber-500">آماده واگذاری</p></div>
+          <a href="https://t.me/${CONFIG.MINI_APP_BOT_USERNAME}?start=register" class="mt-2 py-1 apple-btn rounded-lg text-[9px] text-center font-bold text-slate-300">رزرو دکان</a>
+        </div>`).join('');
+  }
   lucide.createIcons();
 }
 
-function toggleExpandFloor(floorKey) {
-  const state = floorPagination[floorKey];
-  state.isExpanded = !state.isExpanded;
+function shopCardHtml(shop, isFull) {
+  return `<div class="theme-card p-3 rounded-2xl flex flex-col justify-between ${isFull ? 'border-emerald-500/30' : ''}">
+    <div>
+      <div class="h-20 rounded-xl theme-inner-box mb-2 flex items-center justify-center text-2xl relative">
+        🏬<span class="absolute top-1.5 right-1.5 text-[9px] bg-black/60 text-white px-1.5 py-0.5 rounded font-bold">${shop.shopNumber}</span>
+      </div>
+      <h4 class="text-xs font-bold truncate">${shop.shopName}</h4>
+      <p class="text-[10px] theme-subtext mt-0.5 truncate">${shop.category}</p>
+    </div>
+    <button onclick="openShopModal(${shop.id})" class="mt-2.5 w-full py-1.5 apple-btn rounded-xl text-[10px] font-bold text-[#0071e3] flex items-center justify-center gap-1">
+      <span>ورود به غرفه</span><i data-lucide="chevron-left" class="w-3 h-3"></i>
+    </button>
+  </div>`;
+}
 
-  const floorName = decodeURIComponent(floorKey);
-  const activeShops = allShops.filter(s => s.floor === floorName);
-  const btn = document.getElementById(`btn-toggle-${floorKey}`);
-
-  if (state.isExpanded) {
-    btn.innerText = `بستن و چرخش خودکار دکان‌ها`;
-  } else {
-    btn.innerText = `مشاهده همه دکان‌های ${floorName} (دکان‌های فعال + خالی)`;
-  }
-
-  renderFloorCards(floorKey, activeShops, floorName);
+function toggleFloor(key) {
+  const state = floorState[key];
+  state.expanded = !state.expanded;
+  const floor = decodeURIComponent(key);
+  document.getElementById(`btn-${key}`).innerText = state.expanded ? 'بستن دکان‌ها' : `مشاهده همه دکان‌های ${floor}`;
+  renderCards(key, allShops.filter(s => s.floor === floor), floor);
 }
 
 function handleSearch(val) {
-  const query = val.toLowerCase().trim();
-  if (!query) {
-    renderDynamicFloors();
-    return;
-  }
-  const filtered = allShops.filter(s => 
-    s.shopName?.toLowerCase().includes(query) || 
-    s.category?.toLowerCase().includes(query) ||
-    s.shopNumber?.toLowerCase().includes(query)
-  );
-  allShops = filtered;
+  const q = val.toLowerCase().trim();
+  allShops = !q ? defaultShopsData : defaultShopsData.filter(s => s.shopName?.toLowerCase().includes(q) || s.category?.toLowerCase().includes(q) || s.shopNumber?.toLowerCase().includes(q));
   renderDynamicFloors();
 }
