@@ -1,6 +1,7 @@
 {
   "static": {
     "source": "public",
+    "build": "mkdir -p public && cp -f index.html public/ && cp -rf css public/ && cp -rf js public/",
     "spa": true
   }
 }
