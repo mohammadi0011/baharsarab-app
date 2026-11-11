@@ -9,7 +9,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -17,8 +17,8 @@ jobs:
         with:
           node-version: 20
 
-      - name: Deploy to Telegram Serverless
+      - name: Push to Telegram Serverless
         env:
           TGCLOUD_TOKEN: ${{ secrets.TGCLOUD_TOKEN }}
         run: |
-          npx --yes tgcloud push --token "$TGCLOUD_TOKEN"
+          npx --yes @tgcloud/bot push --token "$TGCLOUD_TOKEN"
