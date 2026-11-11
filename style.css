@@ -1,42 +1,54 @@
-/* ۱. جلوگیری قطعی از زوم شدن در موبایل هنگام فوکوس روی اینپوت */
+/* ۱. جلوگیری قطعی از بسته شدن صفحه موقع اسکرول به پایین در تلگرام */
+html, body {
+  overscroll-behavior-y: none;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ۲. جلوگیری قطعی از زوم شدن هنگام تایپ */
 input, select, textarea, .no-zoom {
-  font-size: 16px !important; /* حیاتی برای iOS و Android */
+  font-size: 16px !important;
   touch-action: manipulation;
 }
 
-/* ۲. استایل‌های شیشه‌ای مات مدرن (Glassmorphism) */
-.glass-nav {
-  background: rgba(11, 19, 41, 0.78);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+/* ۳. استایل‌های خالص اپل (Apple Frosted Glass & Dark Titanium) */
+.apple-glass {
+  background: rgba(22, 22, 23, 0.78);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
 }
 
-.glass-card {
+.apple-card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.apple-card:active {
+  transform: scale(0.985);
+}
+
+.apple-btn {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.apple-btn:active {
+  transform: scale(0.96);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.apple-input-wrapper {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.35);
 }
 
-.glass-btn {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.glass-btn:active {
-  transform: scale(0.96);
-  background: rgba(255, 255, 255, 0.16);
-}
-
-.glass-input-wrapper {
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(12px);
-}
-
-/* اسکرول‌بار مخفی و فوق‌العاده نرم */
+/* اسکرول‌بار مخفی */
 ::-webkit-scrollbar {
   display: none;
 }
@@ -47,10 +59,10 @@ input, select, textarea, .no-zoom {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
