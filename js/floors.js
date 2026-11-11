@@ -2,26 +2,31 @@ let allShops = [];
 let floorPagination = {};
 let floorIntervals = {};
 
+// دریافت مستقیم و زنده دکان‌ها از سرورلس تلگرام
 async function loadShopsData() {
-  try {
-    if (tg?.Serverless) {
-      tg.Serverless.call('getShops', {}, (err, res) => {
+  const container = document.getElementById("floors-container");
+  
+  if (window.Telegram?.WebApp?.Serverless) {
+    try {
+      window.Telegram.WebApp.Serverless.call('getShops', {}, (err, res) => {
         if (!err && res?.data && res.data.length > 0) {
           allShops = res.data;
           renderDynamicFloors();
         } else {
+          // اگر دکانی ثبت نشده بود از دیتای پیش‌فرض کانفیگ استفاده شود
           allShops = defaultShopsData;
           renderDynamicFloors();
         }
       });
-    } else {
-      allShops = defaultShopsData;
-      renderDynamicFloors();
+      return;
+    } catch (e) {
+      console.warn("استفاده از دیتای آفلاین:", e);
     }
-  } catch (e) {
-    allShops = defaultShopsData;
-    renderDynamicFloors();
   }
+
+  // حالت مرورگر معمولی خارج از تلگرام
+  allShops = defaultShopsData;
+  renderDynamicFloors();
 }
 
 function renderDynamicFloors() {
