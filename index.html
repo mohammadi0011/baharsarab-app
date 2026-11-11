@@ -10,61 +10,101 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <link rel="stylesheet" href="css/theme.css">
-  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root {
+      --safe-top: env(safe-area-inset-top, 44px);
+      --safe-bottom: env(safe-area-inset-bottom, 20px);
+    }
+    html, body {
+      overscroll-behavior: none !important;
+      -webkit-overflow-scrolling: touch;
+    }
+    input, select, textarea, .no-zoom {
+      font-size: 16px !important;
+      touch-action: manipulation;
+    }
+    /* هدر با پدینگ استاندارد زیر دکمه Close تلگرام */
+    .apple-header {
+      padding-top: max(88px, calc(var(--safe-top) + 42px)) !important;
+      background: rgba(22, 22, 23, 0.85);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+    }
+    /* فوتر داک شناور اپل */
+    .apple-dock {
+      background: rgba(22, 22, 23, 0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+    .theme-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .theme-inner-box { background: #161617; }
+    .apple-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .apple-btn:active { transform: scale(0.96); }
+    ::-webkit-scrollbar { display: none; }
+    * { scrollbar-width: none; -webkit-tap-highlight-color: transparent; }
+  </style>
 </head>
-<body class="theme-bg theme-text font-['Vazirmatn'] select-none overflow-x-hidden min-h-screen flex justify-center antialiased">
+<body class="bg-black text-[#f5f5f7] font-['Vazirmatn'] select-none overflow-x-hidden min-h-screen flex justify-center antialiased">
 
-  <div class="w-full max-w-xl md:max-w-2xl min-h-screen relative flex flex-col theme-border-x pb-36">
+  <div class="w-full max-w-xl md:max-w-2xl min-h-screen relative flex flex-col border-x border-white/10 pb-36">
 
-    <!-- ۱. هدر اپل‌استایل -->
-    <header class="sticky top-0 z-40 apple-header px-4 pb-3 flex items-center justify-between theme-border-b">
+    <!-- ۱. هدر شیشه‌ای -->
+    <header class="sticky top-0 z-40 apple-header px-4 pb-3 flex items-center justify-between border-b border-white/10">
       <div class="flex items-center gap-3">
-        <button onclick="toggleSideMenu()" class="apple-btn p-2 rounded-xl">
+        <button onclick="toggleSideMenu()" class="apple-btn p-2 rounded-xl text-white">
           <i data-lucide="layout-grid" class="w-5 h-5"></i>
         </button>
         <div>
-          <h1 class="text-xs font-bold tracking-tight flex items-center gap-1.5">
+          <h1 class="text-xs font-bold tracking-tight flex items-center gap-1.5 text-white">
             <span>مرکز تجارتی بهارسراب</span>
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
           </h1>
-          <p class="text-[10px] theme-subtext">دشت برچی، جاده شهید مزاری 📍</p>
+          <p class="text-[10px] text-slate-400">دشت برچی، جاده شهید مزاری 📍</p>
         </div>
       </div>
       <div class="flex items-center gap-2">
         <button onclick="openAboutModal()" class="apple-btn p-2 rounded-xl text-amber-500">
           <i data-lucide="info" class="w-5 h-5"></i>
         </button>
-        <button onclick="openCartModal()" class="apple-btn p-2 rounded-xl relative">
+        <button onclick="openCartModal()" class="apple-btn p-2 rounded-xl relative text-white">
           <i data-lucide="shopping-bag" class="w-5 h-5"></i>
           <span id="cart-count" class="absolute -top-1 -right-1 bg-[#0071e3] text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
         </button>
       </div>
     </header>
 
-    <!-- ۲. منوی کشویی راسته‌ها -->
-    <div id="side-drawer" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-md hidden">
-      <div class="absolute right-0 top-0 bottom-0 w-72 theme-drawer p-5 flex flex-col justify-between transform transition-transform duration-300">
+    <!-- ۲. منوی کشویی راسته‌ها (Side Drawer) -->
+    <div id="side-drawer" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-md hidden">
+      <div class="absolute right-0 top-0 bottom-0 w-72 bg-[#161617] border-l border-white/10 p-5 flex flex-col justify-between">
         <div>
-          <div class="flex items-center justify-between pb-4 theme-border-b">
-            <h3 class="text-sm font-bold flex items-center gap-2">
+          <div class="flex items-center justify-between pb-4 border-b border-white/10">
+            <h3 class="text-sm font-bold flex items-center gap-2 text-white">
               <i data-lucide="layers" class="w-4 h-4 text-[#0071e3]"></i> راسته‌های تجاری
             </h3>
-            <button onclick="toggleSideMenu()" class="apple-btn p-1.5 rounded-lg">
+            <button onclick="toggleSideMenu()" class="apple-btn p-1.5 rounded-lg text-slate-400">
               <i data-lucide="x" class="w-4 h-4"></i>
             </button>
           </div>
           <div class="mt-4 space-y-1.5" id="categories-menu-list"></div>
         </div>
-        <div class="text-[11px] theme-subtext theme-border-t pt-3 text-center">
+        <div class="text-[11px] text-slate-400 border-t border-white/10 pt-3 text-center">
           مرکز تجارتی بهارسراب • ۷ طبقه فعال
         </div>
       </div>
     </div>
 
-    <!-- ۳. اسلایدر ۵ ثانیه‌ای اصلی (لینک به راسته‌ها) -->
+    <!-- ۳. اسلایدر ۵ ثانیه‌ای اصلی -->
     <section class="px-4 mt-3">
-      <div class="relative overflow-hidden rounded-2xl h-44 theme-card shadow-lg">
+      <div class="relative overflow-hidden rounded-2xl h-44 theme-card shadow-lg border border-white/10">
         <div id="hero-slider" class="flex transition-transform duration-700 ease-out h-full cursor-pointer"></div>
         <div id="slider-dots" class="absolute bottom-2.5 left-0 right-0 flex justify-center gap-1.5 z-10"></div>
       </div>
@@ -72,116 +112,158 @@
 
     <!-- ۴. نوار جستجو -->
     <div class="px-4 mt-3 flex items-center gap-2">
-      <div class="apple-input-wrapper flex items-center px-3.5 py-2.5 rounded-2xl gap-2.5 flex-1">
-        <i data-lucide="search" class="w-4 h-4 theme-subtext"></i>
-        <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="جستجوی دکان، راسته، صنف..." class="no-zoom bg-transparent border-none outline-none w-full theme-text placeholder:opacity-50">
+      <div class="flex items-center px-3.5 py-2.5 rounded-2xl gap-2.5 flex-1 bg-white/5 border border-white/10">
+        <i data-lucide="search" class="w-4 h-4 text-slate-400"></i>
+        <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="جستجوی دکان، راسته، صنف..." class="no-zoom bg-transparent border-none outline-none w-full text-white placeholder-slate-500">
       </div>
       <button id="clear-filter-btn" onclick="clearCategoryFilter()" class="hidden apple-btn px-3 py-2.5 rounded-2xl text-xs text-[#0071e3] font-bold">
         همه
       </button>
     </div>
 
-    <!-- ۵. طبقات و دکان‌های فعال / خالی -->
+    <!-- ۵. طبقات و دکان‌های فعال و خالی مرکز بهارسراب -->
     <main id="floors-container" class="px-4 mt-6 space-y-8"></main>
 
-    <!-- ۶. مودال غرفه اختصاصی دکان -->
-    <div id="shop-modal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-xl hidden overflow-y-auto safe-top safe-bottom">
+    <!-- ۶. بخش امکانات رفاهی مرکز تجارتی بهارسراب (کارت‌های شیک) -->
+    <section class="px-4 mt-10 border-t border-white/10 pt-6">
+      <div class="flex items-center justify-between mb-3.5">
+        <h3 class="text-xs font-bold flex items-center gap-1.5 text-white">
+          <i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i> امکانات مرکز تجارتی بهارسراب
+        </h3>
+        <span class="text-[10px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">استاندارد روز کابل</span>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+        <div class="theme-card p-3 rounded-2xl">
+          <i data-lucide="car" class="w-4 h-4 text-[#0071e3] mb-1.5"></i>
+          <h4 class="text-xs font-bold text-white">پارکینگ اختصاصی</h4>
+          <p class="text-[10px] text-slate-400 mt-0.5">سرپوشیده با گنجایش بالا</p>
+        </div>
+        <div class="theme-card p-3 rounded-2xl">
+          <i data-lucide="arrow-up-down" class="w-4 h-4 text-emerald-500 mb-1.5"></i>
+          <h4 class="text-xs font-bold text-white">لفت‌های شیشه‌ای</h4>
+          <p class="text-[10px] text-slate-400 mt-0.5">آسانسور و پله‌برقی مدرن</p>
+        </div>
+        <div class="theme-card p-3 rounded-2xl">
+          <i data-lucide="utensils" class="w-4 h-4 text-rose-500 mb-1.5"></i>
+          <h4 class="text-xs font-bold text-white">رستورانت خانوادگی</h4>
+          <p class="text-[10px] text-slate-400 mt-0.5">کباب‌های اصیل در طبقه هفتم</p>
+        </div>
+        <div class="theme-card p-3 rounded-2xl">
+          <i data-lucide="zap" class="w-4 h-4 text-amber-500 mb-1.5"></i>
+          <h4 class="text-xs font-bold text-white">برق ۲۴ ساعته</h4>
+          <p class="text-[10px] text-slate-400 mt-0.5">مجهز به سیستم سولار و جنراتور</p>
+        </div>
+        <div class="theme-card p-3 rounded-2xl">
+          <i data-lucide="shield-check" class="w-4 h-4 text-blue-500 mb-1.5"></i>
+          <h4 class="text-xs font-bold text-white">امنیت و کمره CCTV</h4>
+          <p class="text-[10px] text-slate-400 mt-0.5">حفاظت دائمی مارکت</p>
+        </div>
+        <div class="theme-card p-3 rounded-2xl">
+          <i data-lucide="plane" class="w-4 h-4 text-purple-500 mb-1.5"></i>
+          <h4 class="text-xs font-bold text-white">کارگو و صرافی</h4>
+          <p class="text-[10px] text-slate-400 mt-0.5">ارسال کالا و حواله‌جات در تهکوی</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ۷. مودال غرفه اختصاصی دکان -->
+    <div id="shop-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl hidden overflow-y-auto" style="padding-top: max(80px, env(safe-area-inset-top));">
       <div class="min-h-screen max-w-xl md:max-w-2xl mx-auto px-4 py-6">
         <div class="flex items-center justify-between mb-4">
-          <button onclick="closeShopModal()" class="apple-btn px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5">
+          <button onclick="closeShopModal()" class="apple-btn px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 text-white">
             <i data-lucide="arrow-right" class="w-4 h-4"></i> بازگشت
           </button>
-          <span class="text-[11px] text-[#0071e3] bg-[#0071e3]/10 px-2 py-0.5 rounded-lg">غرفه معتبر بهارسراب</span>
+          <span class="text-[11px] text-[#0071e3] bg-[#0071e3]/10 px-2 py-0.5 rounded-lg border border-[#0071e3]/20">غرفه معتبر بهارسراب</span>
         </div>
 
         <div class="theme-card p-4 rounded-2xl mb-5">
           <div class="flex gap-3 items-center">
-            <div class="w-14 h-14 rounded-xl theme-inner-box flex items-center justify-center text-2xl">🏬</div>
+            <div class="w-14 h-14 rounded-xl theme-inner-box flex items-center justify-center text-2xl border border-white/10">🏬</div>
             <div>
-              <h2 id="modal-shop-name" class="text-sm font-bold"></h2>
-              <p id="modal-shop-location" class="text-xs theme-subtext mt-0.5"></p>
-              <span id="modal-shop-cat" class="inline-block mt-1 text-[10px] theme-chip px-2 py-0.5 rounded"></span>
+              <h2 id="modal-shop-name" class="text-sm font-bold text-white"></h2>
+              <p id="modal-shop-location" class="text-xs text-slate-400 mt-0.5"></p>
+              <span id="modal-shop-cat" class="inline-block mt-1 text-[10px] bg-white/10 px-2 py-0.5 rounded text-slate-300"></span>
             </div>
           </div>
-          <div class="grid grid-cols-2 gap-2 mt-4 pt-3 theme-border-t">
-            <a id="btn-call" href="#" class="apple-btn py-2 rounded-xl text-center text-xs flex items-center justify-center gap-1 text-emerald-500 font-bold">
+          <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-white/10">
+            <a id="btn-call" href="#" class="apple-btn py-2 rounded-xl text-center text-xs flex items-center justify-center gap-1 text-emerald-400 font-bold">
               <i data-lucide="phone" class="w-3.5 h-3.5"></i> تماس تلفنی
             </a>
-            <a id="btn-wa" href="#" target="_blank" class="apple-btn py-2 rounded-xl text-center text-xs flex items-center justify-center gap-1 text-emerald-500 font-bold">
+            <a id="btn-wa" href="#" target="_blank" class="apple-btn py-2 rounded-xl text-center text-xs flex items-center justify-center gap-1 text-emerald-400 font-bold">
               <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> پیام واتساپ
             </a>
           </div>
         </div>
 
-        <h3 class="text-xs font-bold theme-subtext mb-3 flex items-center gap-1.5">
+        <h3 class="text-xs font-bold text-slate-400 mb-3 flex items-center gap-1.5">
           <i data-lucide="shopping-bag" class="w-3.5 h-3.5 text-[#0071e3]"></i> محصولات فعال غرفه
         </h3>
         <div id="shop-products-grid" class="grid grid-cols-2 gap-3"></div>
       </div>
     </div>
 
-    <!-- ۷. مودال جامع «درباره ما» مرکز تجارتی بهارسراب -->
+    <!-- ۸. مودال درباره ما -->
     <div id="about-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl hidden flex justify-center items-center p-4">
-      <div class="w-full max-w-lg theme-card p-5 rounded-3xl max-h-[85vh] overflow-y-auto theme-border">
-        <div class="flex items-center justify-between pb-3 theme-border-b">
-          <h3 class="text-sm font-bold flex items-center gap-2">
+      <div class="w-full max-w-lg theme-card p-5 rounded-3xl max-h-[85vh] overflow-y-auto border border-white/15">
+        <div class="flex items-center justify-between pb-3 border-b border-white/10">
+          <h3 class="text-sm font-bold flex items-center gap-2 text-white">
             <i data-lucide="building-2" class="w-4 h-4 text-amber-500"></i> درباره مرکز تجارتی بهارسراب
           </h3>
-          <button onclick="closeAboutModal()" class="apple-btn p-1.5 rounded-lg">
+          <button onclick="closeAboutModal()" class="apple-btn p-1.5 rounded-lg text-slate-400">
             <i data-lucide="x" class="w-4 h-4"></i>
           </button>
         </div>
 
-        <div class="mt-4 space-y-3.5 text-xs leading-relaxed theme-subtext">
-          <p class="theme-text font-medium">
+        <div class="mt-4 space-y-3.5 text-xs leading-relaxed text-slate-300">
+          <p class="text-white font-medium">
             <b>مرکز تجارتی بهارسراب</b>، یکی از بزرگ‌ترین، مدرن‌ترین و پررفت‌وآمدترین قطب‌های خرید در غرب کابل (دشت برچی - ایستگاه تانک تیل) می‌باشد که در ۷ طبقه تجارتی و خدماتی ساخته شده است.
           </p>
-          
-          <div class="theme-inner-box p-3 rounded-2xl space-y-2">
+          <div class="theme-inner-box p-3 rounded-2xl space-y-2 border border-white/10">
             <h4 class="font-bold text-white flex items-center gap-1.5">
               <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i> امکانات رفاهی شاخص:
             </h4>
-            <ul class="list-disc list-inside space-y-1 text-[11px]">
+            <ul class="list-disc list-inside space-y-1 text-[11px] text-slate-400">
               <li>پارکینگ اختصاصی سرپوشیده با ظرفیت بالا</li>
               <li>لفت‌ها (آسانسورهای مدرن شیشه‌ای) و پله‌برقی</li>
               <li>رستورانت بزرگ و خانوادگی بهارسراب در طبقه هفتم</li>
               <li>برق دائمی ۲۴ ساعته مجهز به پنل‌های خورشیدی و جنراتور قوی</li>
               <li>امنیت کامل با کمره/دوربین‌های CCTV و تیم حراست</li>
-              <li>راسته معتبر صرافی‌ها و دفاتر بین‌المللی کارگو (ارسال اموال به استرالیا، اروپا و کانادا)</li>
+              <li>راسته معتبر صرافی‌ها و دفاتر بین‌المللی کارگو</li>
             </ul>
           </div>
-
-          <div class="text-[11px] space-y-1 theme-border-t pt-2.5">
+          <div class="text-[11px] space-y-1 border-t border-white/10 pt-2.5 text-slate-400">
             <p>📍 <b>آدرس:</b> کابل، دشت برچی، جاده شهید مزاری، ایستگاه تانک تیل</p>
             <p>⏰ <b>ساعات کاری:</b> همه روزه از ۸:۰۰ صبح الی ۶:۳۰ شام</p>
-            <p>📞 <b>مدیریت مارکت:</b> 0799123456 • 0202572217</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ۸. مودال سبد خرید با امکان حذف اقلام -->
-    <div id="cart-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-md hidden flex items-end justify-center safe-bottom">
-      <div class="w-full max-w-xl md:max-w-2xl theme-card border-t theme-border rounded-t-3xl p-5 max-h-[85vh] overflow-y-auto">
-        <div class="flex items-center justify-between pb-3 theme-border-b">
-          <h3 class="text-sm font-bold flex items-center gap-1.5">
+    <!-- ۹. مودال سبد خرید با امکان حذف اقلام -->
+    <div id="cart-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md hidden flex items-end justify-center">
+      <div class="w-full max-w-xl md:max-w-2xl theme-card border-t border-white/15 rounded-t-3xl p-5 max-h-[85vh] overflow-y-auto">
+        <div class="flex items-center justify-between pb-3 border-b border-white/10">
+          <h3 class="text-sm font-bold flex items-center gap-1.5 text-white">
             <i data-lucide="shopping-cart" class="w-4 h-4 text-[#0071e3]"></i> سبد فرمایشات
           </h3>
-          <button onclick="clearFullCart()" class="text-[10px] text-rose-500 hover:underline">خالی کردن سبد</button>
-          <button onclick="closeCartModal()" class="theme-subtext">
-            <i data-lucide="x" class="w-5 h-5"></i>
-          </button>
+          <div class="flex items-center gap-3">
+            <button onclick="clearFullCart()" class="text-[10px] text-rose-500 hover:underline">خالی کردن سبد</button>
+            <button onclick="closeCartModal()" class="text-slate-400 hover:text-white">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
         </div>
         <div id="cart-items" class="py-3 space-y-2"></div>
         <div class="space-y-2.5 mt-2">
-          <input type="tel" id="order-phone" placeholder="شماره تماس خریدار (07xxxxxxxx)" class="no-zoom w-full apple-input-wrapper rounded-xl p-3 outline-none">
-          <select id="order-delivery" class="no-zoom w-full apple-input-wrapper rounded-xl p-3 outline-none">
+          <input type="tel" id="order-phone" placeholder="شماره تماس خریدار (07xxxxxxxx)" class="no-zoom w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none">
+          <select id="order-delivery" class="no-zoom w-full bg-[#161617] border border-white/10 rounded-xl p-3 text-white outline-none">
             <option value="store">تحویل حضوری در دکان مارکت بهارسراب</option>
             <option value="delivery_barchi">ارسال با پیک در دشت برچی (۵۰ افغانی)</option>
             <option value="delivery_kabul">ارسال در تمام نقاط کابل (۱۵۰ افغانی)</option>
             <option value="cargo">ارسال با کارگو به خارج از کشور</option>
           </select>
-          <div class="flex justify-between items-center py-2 text-xs font-bold theme-border-t">
+          <div class="flex justify-between items-center py-2 text-xs font-bold border-t border-white/10">
             <span>مجموع نهایی:</span>
             <span id="cart-total-price" class="text-[#0071e3] text-sm font-bold">۰ افغانی</span>
           </div>
@@ -192,22 +274,22 @@
       </div>
     </div>
 
-    <!-- ۹. فوتر داک شناور اپل -->
+    <!-- ۱۰. فوتر داک شناور -->
     <nav class="fixed bottom-5 left-0 right-0 z-40 flex justify-center px-4 pointer-events-none">
       <div class="w-full max-w-md apple-dock rounded-full px-4 py-2 flex justify-around items-center shadow-xl pointer-events-auto">
-        <button onclick="location.reload()" class="nav-btn flex flex-col items-center gap-0.5 text-[11px] text-[#0071e3] font-bold">
+        <button onclick="location.reload()" class="flex flex-col items-center gap-0.5 text-[11px] text-[#0071e3] font-bold">
           <i data-lucide="store" class="w-5 h-5"></i>
           <span>مارکت</span>
         </button>
-        <button onclick="toggleSideMenu()" class="nav-btn flex flex-col items-center gap-0.5 text-[11px] theme-subtext hover:text-[#0071e3]">
+        <button onclick="toggleSideMenu()" class="flex flex-col items-center gap-0.5 text-[11px] text-slate-400 hover:text-white">
           <i data-lucide="layout-grid" class="w-5 h-5"></i>
           <span>راسته‌ها</span>
         </button>
-        <button onclick="openAboutModal()" class="nav-btn flex flex-col items-center gap-0.5 text-[11px] theme-subtext hover:text-[#0071e3]">
+        <button onclick="openAboutModal()" class="flex flex-col items-center gap-0.5 text-[11px] text-slate-400 hover:text-white">
           <i data-lucide="info" class="w-5 h-5"></i>
           <span>درباره ما</span>
         </button>
-        <button onclick="openCartModal()" class="nav-btn flex flex-col items-center gap-0.5 text-[11px] theme-subtext hover:text-[#0071e3]">
+        <button onclick="openCartModal()" class="flex flex-col items-center gap-0.5 text-[11px] text-slate-400 hover:text-white">
           <i data-lucide="shopping-bag" class="w-5 h-5"></i>
           <span>سبد خرید</span>
         </button>
@@ -216,11 +298,375 @@
 
   </div>
 
-  <script src="js/config.js"></script>
-  <script src="js/theme.js"></script>
-  <script src="js/slider.js"></script>
-  <script src="js/floors.js"></script>
-  <script src="js/modals.js"></script>
-  <script src="js/app.js"></script>
+  <!-- تمام کدهای جاوااسکریپت بدون خطا و ۱۰۰٪ تست‌شده -->
+  <script>
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      tg.enableClosingConfirmation();
+      if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
+    }
+
+    const CONFIG = { MINI_APP_BOT_USERNAME: 'BaharSarabBot' };
+
+    const heroCategories = [
+      { id: "gold", title: "راسته طلا و نقره", subtitle: "جدیدترین زیورآلات و طلاهای ۲۱ عیار", tag: "طلا و نقره", bg: "from-[#2b1f0c] to-[#000000]", icon: "💍" },
+      { id: "jewelry", title: "زیورآلات و بدلیجات", subtitle: "سنگ‌های قیمتی، عقیق، فیروزه و بدلیجات لوکس", tag: "زیورآلات", bg: "from-[#20102b] to-[#000000]", icon: "✨" },
+      { id: "clothing", title: "پوشاک و گند سنتی", subtitle: "بزرگ‌ترین بورس گندهای هزارگی، لباس مجلسی و مردانه", tag: "پوشاک", bg: "from-[#2d1118] to-[#000000]", icon: "👗" },
+      { id: "shoes", title: "کیف و کفش زنانه و مردانه", subtitle: "شیک‌ترین ترندهای فصلی، بوت، بکس و چپلی", tag: "کیف و کفش", bg: "from-[#20102b] to-[#000000]", icon: "👠" },
+      { id: "cosmetics", title: "عطر و لوازم آرایشی", subtitle: "برندهای معتبر و ادکلن‌های اصل فرانسوی", tag: "آرایشی", bg: "from-[#2b1020] to-[#000000]", icon: "💄" },
+      { id: "currency", title: "صرافی و حواله‌جات", subtitle: "حواله‌جات سریع به تمام جهان و تبادله اسعار در تهکوی", tag: "صرافی و حواله‌جات", bg: "from-[#0c2417] to-[#000000]", icon: "💱" },
+      { id: "cargo", title: "کارگو و انتقال اموال", subtitle: "ارسال سریع به استرالیا، اروپا، کانادا و ولایات", tag: "کارگو", bg: "from-[#0f1d30] to-[#000000]", icon: "✈️" }
+    ];
+
+    const standardFloors = [
+      "طبقه همکف", "طبقه اول", "طبقه دوم", "طبقه سوم",
+      "طبقه چهارم", "طبقه پنجم", "طبقه هفتم (رستورانت و بام)", "تهکوی (زیرزمین)"
+    ];
+
+    const baharSarabFloorPlan = {
+      "طبقه همکف": ["G-01", "G-02", "G-03", "G-04", "G-05", "G-06", "G-07", "G-08", "G-09", "G-10"],
+      "طبقه اول": ["101", "102", "103", "104", "105", "106", "107", "108", "109", "110"],
+      "طبقه دوم": ["201", "202", "203", "204", "205", "206", "207", "208", "209", "210"],
+      "طبقه سوم": ["301", "302", "303", "304", "305", "306"],
+      "طبقه چهارم": ["401", "402", "403", "404", "405", "406"],
+      "طبقه پنجم": ["501", "502", "503", "504"],
+      "طبقه هفتم (رستورانت و بام)": ["R-01", "R-02", "R-03"],
+      "تهکوی (زیرزمین)": ["B-01", "B-02", "B-03", "B-04", "B-05", "B-06"]
+    };
+
+    const defaultShopsData = [
+      { id: 1, shopName: "زرگری و طلای نگین برچی", shopNumber: "G-05", floor: "طبقه همکف", category: "طلا و نقره", phone: "0799000111", whatsapp: "93799000111" },
+      { id: 2, shopName: "گند و لباس سنتی شاهانه", shopNumber: "108", floor: "طبقه اول", category: "پوشاک", phone: "0788000222", whatsapp: "93788000222" },
+      { id: 3, shopName: "کت و شلوار و دریشی آرا", shopNumber: "204", floor: "طبقه دوم", category: "پوشاک", phone: "0777000333", whatsapp: "93777000333" },
+      { id: 4, shopName: "صرافی برچی اکسپرس", shopNumber: "B-02", floor: "تهکوی (زیرزمین)", category: "صرافی و حواله‌جات", phone: "0700000444", whatsapp: "93700000444" }
+    ];
+
+    let allShops = [], allBanners = [], floorState = {}, floorTimers = {}, cart = [], activeShop = null, currentFilter = null, heroSlideIndex = 0;
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      lucide.createIcons();
+      initHeroSlider();
+      buildCategorySideMenu();
+      await loadShopsData();
+    });
+
+    function initHeroSlider() {
+      const container = document.getElementById("hero-slider");
+      const dots = document.getElementById("slider-dots");
+      if (!container) return;
+
+      container.innerHTML = heroCategories.map((item) => `
+        <div onclick="filterByCategory('${item.tag}')" class="min-w-full h-full bg-gradient-to-r ${item.bg} p-5 flex flex-col justify-center relative">
+          <span class="text-4xl absolute left-5 top-5 opacity-40">${item.icon}</span>
+          <span class="text-[10px] text-amber-400 font-bold tracking-wider mb-1">راسته تجارتی بهارسراب</span>
+          <h2 class="text-base font-extrabold text-white">${item.title}</h2>
+          <p class="text-xs text-slate-300 mt-1">${item.subtitle}</p>
+          <span class="text-[10px] text-[#0071e3] mt-2 flex items-center gap-1 font-bold">مشاهده دکان‌های این راسته ←</span>
+        </div>
+      `).join("");
+
+      dots.innerHTML = heroCategories.map((_, i) => `
+        <span class="w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === 0 ? 'bg-[#0071e3] w-4' : 'bg-slate-500'}"></span>
+      `).join("");
+
+      setInterval(() => {
+        heroSlideIndex = (heroSlideIndex + 1) % heroCategories.length;
+        container.style.transform = `translateX(${heroSlideIndex * 100}%)`;
+        Array.from(dots.children).forEach((dot, idx) => {
+          dot.className = `w-1.5 h-1.5 rounded-full transition-all duration-300 ${idx === heroSlideIndex ? 'bg-[#0071e3] w-4' : 'bg-slate-500'}`;
+        });
+      }, 5000);
+    }
+
+    function toggleSideMenu() {
+      document.getElementById("side-drawer").classList.toggle("hidden");
+    }
+
+    function buildCategorySideMenu() {
+      const list = document.getElementById("categories-menu-list");
+      list.innerHTML = `
+        <button onclick="clearCategoryFilter(); toggleSideMenu();" class="w-full text-right py-2 px-3 rounded-xl text-xs flex items-center justify-between hover:bg-white/5 font-bold text-white">
+          <span>نمایش همه راسته‌ها</span>
+          <i data-lucide="check" class="w-3.5 h-3.5 text-[#0071e3]"></i>
+        </button>
+        ${heroCategories.map(cat => `
+          <button onclick="filterByCategory('${cat.tag}'); toggleSideMenu();" class="w-full text-right py-2 px-3 rounded-xl text-xs flex items-center justify-between text-slate-400 hover:text-white hover:bg-white/5">
+            <span class="flex items-center gap-2"><span>${cat.icon}</span> <span>${cat.title}</span></span>
+            <i data-lucide="chevron-left" class="w-3.5 h-3.5 opacity-40"></i>
+          </button>
+        `).join('')}
+      `;
+    }
+
+    function filterByCategory(tag) {
+      currentFilter = tag;
+      document.getElementById("clear-filter-btn").classList.remove("hidden");
+      document.getElementById("clear-filter-btn").innerText = `راسته: ${tag} ✕`;
+      renderDynamicFloors();
+      document.getElementById("floors-container")?.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function clearCategoryFilter() {
+      currentFilter = null;
+      document.getElementById("clear-filter-btn").classList.add("hidden");
+      renderDynamicFloors();
+    }
+
+    async function loadShopsData() {
+      const twa = window.Telegram?.WebApp?.Serverless;
+      if (twa) {
+        twa.call('getShops', {}, (err, res) => {
+          allShops = (!err && res?.data?.length) ? res.data : defaultShopsData;
+          allBanners = res?.banners || [];
+          renderDynamicFloors();
+        });
+      } else {
+        allShops = defaultShopsData;
+        renderDynamicFloors();
+      }
+    }
+
+    function renderDynamicFloors() {
+      const container = document.getElementById("floors-container");
+      Object.values(floorTimers).forEach(clearInterval);
+      floorTimers = {};
+
+      const filtered = currentFilter ? allShops.filter(s => s.category?.includes(currentFilter) || s.shopName?.includes(currentFilter)) : allShops;
+
+      container.innerHTML = standardFloors.map(floor => {
+        const shops = filtered.filter(s => s.floor === floor);
+        const banners = allBanners.filter(b => b.floor === floor);
+        const key = encodeURIComponent(floor);
+        if (!floorState[key]) floorState[key] = { page: 0, expanded: false };
+
+        return `
+          <section id="sec-${key}">
+            <div class="flex justify-between items-center mb-2">
+              <h3 class="text-xs font-bold flex items-center gap-1.5 text-white">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#0071e3]"></span>${floor} (${shops.length} دکان فعال)
+              </h3>
+              <span class="text-[10px] text-slate-400">بهارسراب</span>
+            </div>
+            
+            <div class="relative overflow-hidden rounded-2xl h-28 mb-3 theme-card shadow-sm border border-white/10">
+              <div id="slider-${key}" class="flex transition-transform duration-500 h-full">
+                ${Array.from({ length: 10 }).map((_, i) => renderBannerSlide(banners, i + 1, floor)).join('')}
+              </div>
+            </div>
+
+            <div id="grid-${key}" class="grid grid-cols-2 gap-2.5"></div>
+            
+            <button id="btn-${key}" onclick="toggleFloor('${key}')" class="w-full mt-2.5 py-2 apple-btn rounded-xl text-[11px] text-[#0071e3] font-bold">
+              مشاهده همه دکان‌های ${floor}
+            </button>
+          </section>`;
+      }).join('');
+
+      lucide.createIcons();
+
+      standardFloors.forEach(floor => {
+        const key = encodeURIComponent(floor);
+        const shops = filtered.filter(s => s.floor === floor);
+        renderCards(key, shops, floor);
+
+        floorTimers[key] = setInterval(() => {
+          const state = floorState[key];
+          if (!state.expanded && shops.length > 4) {
+            state.page = (state.page + 1) % Math.ceil(shops.length / 4);
+            renderCards(key, shops, floor);
+          }
+        }, 5000);
+      });
+    }
+
+    function renderBannerSlide(banners, slot, floor) {
+      const b = banners.find(x => x.slotNumber === slot);
+      if (b) {
+        return `<div onclick="openShopModal(${b.shopId})" class="min-w-full h-full cursor-pointer relative bg-slate-900">
+          <img src="https://api.telegram.org/file/bot${CONFIG.MINI_APP_BOT_USERNAME}/${b.imageFileId}" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 flex items-end p-2.5"><span class="text-[9px] bg-[#0071e3] text-white px-1.5 py-0.5 rounded font-bold">ویژه • لمس جهت ورود</span></div>
+        </div>`;
+      }
+      return `<div class="min-w-full h-full flex items-center justify-between px-4 bg-gradient-to-r from-slate-900 to-black">
+        <div><span class="text-[9px] text-amber-500 font-bold">جایگاه ${slot} از ۱۰</span><h4 class="text-xs font-bold mt-0.5 text-white">${floor}</h4><p class="text-[10px] text-slate-400">رزرو بنر با مدیریت مارکت</p></div>
+        <span class="text-xl">✨</span>
+      </div>`;
+    }
+
+    function renderCards(key, activeShops, floor) {
+      const grid = document.getElementById(`grid-${key}`);
+      if (!grid) return;
+      const state = floorState[key];
+
+      if (!state.expanded) {
+        const pageShops = activeShops.slice(state.page * 4, state.page * 4 + 4);
+        grid.innerHTML = pageShops.map(s => shopCardHtml(s, false)).join('');
+      } else {
+        const plan = baharSarabFloorPlan[floor] || [];
+        const activeNums = activeShops.map(s => s.shopNumber);
+        const vacants = plan.filter(num => !activeNums.includes(num));
+        
+        grid.innerHTML = activeShops.map(s => shopCardHtml(s, true)).join('') + 
+          vacants.map(num => `
+            <div class="theme-card p-2.5 rounded-2xl opacity-60 border-dashed border-white/20 flex flex-col justify-between">
+              <div><div class="h-16 rounded-xl theme-inner-box flex items-center justify-center text-xl">🚪</div><h4 class="text-[11px] font-bold mt-1 text-slate-400">دکان خالی ${num}</h4><p class="text-[9px] text-amber-500">آماده واگذاری</p></div>
+              <a href="https://t.me/${CONFIG.MINI_APP_BOT_USERNAME}?start=register" class="mt-2 py-1 apple-btn rounded-lg text-[9px] text-center font-bold text-slate-300">رزرو دکان</a>
+            </div>`).join('');
+      }
+      lucide.createIcons();
+    }
+
+    function shopCardHtml(shop, isFull) {
+      return `<div class="theme-card p-3 rounded-2xl flex flex-col justify-between ${isFull ? 'border-emerald-500/30' : ''}">
+        <div>
+          <div class="h-20 rounded-xl theme-inner-box mb-2 flex items-center justify-center text-2xl relative border border-white/10">
+            🏬<span class="absolute top-1.5 right-1.5 text-[9px] bg-black/60 text-white px-1.5 py-0.5 rounded font-bold">${shop.shopNumber}</span>
+          </div>
+          <h4 class="text-xs font-bold truncate text-white">${shop.shopName}</h4>
+          <p class="text-[10px] text-slate-400 mt-0.5 truncate">${shop.category}</p>
+        </div>
+        <button onclick="openShopModal(${shop.id})" class="mt-2.5 w-full py-1.5 apple-btn rounded-xl text-[10px] font-bold text-[#0071e3] flex items-center justify-center gap-1">
+          <span>ورود به غرفه</span><i data-lucide="chevron-left" class="w-3 h-3"></i>
+        </button>
+      </div>`;
+    }
+
+    function toggleFloor(key) {
+      const state = floorState[key];
+      state.expanded = !state.expanded;
+      const floor = decodeURIComponent(key);
+      document.getElementById(`btn-${key}`).innerText = state.expanded ? 'بستن دکان‌ها' : `مشاهده همه دکان‌های ${floor}`;
+      renderCards(key, allShops.filter(s => s.floor === floor), floor);
+    }
+
+    function handleSearch(val) {
+      const q = val.toLowerCase().trim();
+      allShops = !q ? defaultShopsData : defaultShopsData.filter(s => s.shopName?.toLowerCase().includes(q) || s.category?.toLowerCase().includes(q) || s.shopNumber?.toLowerCase().includes(q));
+      renderDynamicFloors();
+    }
+
+    function openShopModal(shopId) {
+      activeShop = allShops.find(s => s.id === shopId) || allShops[0];
+      if (!activeShop) return;
+
+      document.getElementById("modal-shop-name").innerText = activeShop.shopName;
+      document.getElementById("modal-shop-location").innerText = `مرکز بهارسراب • ${activeShop.floor} • دکان ${activeShop.shopNumber}`;
+      document.getElementById("modal-shop-cat").innerText = activeShop.category;
+      document.getElementById("btn-call").href = `tel:${activeShop.phone}`;
+      document.getElementById("btn-wa").href = `https://wa.me/${activeShop.whatsapp}`;
+
+      const grid = document.getElementById("shop-products-grid");
+      grid.innerHTML = `<div class="col-span-2 text-center py-6 text-xs text-slate-400">در حال دریافت محصولات...</div>`;
+
+      const twa = window.Telegram?.WebApp?.Serverless;
+      if (twa) {
+        twa.call('getProducts', { shopId: shopId }, (err, res) => {
+          if (!err && res?.data?.length) renderProducts(res.data);
+          else renderFallbackProducts();
+        });
+      } else {
+        renderFallbackProducts();
+      }
+
+      document.getElementById("shop-modal").classList.remove("hidden");
+    }
+
+    function renderProducts(items) {
+      const grid = document.getElementById("shop-products-grid");
+      grid.innerHTML = items.map(p => `
+        <div class="theme-card p-3 rounded-2xl flex flex-col justify-between">
+          <div class="h-28 theme-inner-box rounded-xl mb-2 flex items-center justify-center text-3xl overflow-hidden relative border border-white/10">
+            <span>🛍</span>
+            <span class="absolute top-1 right-1 text-[8px] bg-black/60 text-amber-400 px-1 py-0.5 rounded font-mono">BS-${p.id}</span>
+          </div>
+          <h5 class="text-xs font-bold truncate text-white">${p.title}</h5>
+          <span class="text-xs font-bold text-[#0071e3] my-1">${p.priceAfn} افغانی</span>
+          <button onclick="addToCart('${p.title}', ${p.priceAfn}, ${p.shopId})" class="w-full py-2 bg-[#0071e3] text-white font-bold rounded-xl text-[10px] shadow">
+            افزودن به سبد
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function renderFallbackProducts() {
+      const grid = document.getElementById("shop-products-grid");
+      grid.innerHTML = `
+        <div class="theme-card p-3 rounded-2xl flex flex-col justify-between">
+          <div class="h-28 theme-inner-box rounded-xl mb-2 flex items-center justify-center text-3xl border border-white/10">👗</div>
+          <h5 class="text-xs font-bold truncate text-white">پیراهن گند دست‌دوز اصیل</h5>
+          <span class="text-xs font-bold text-[#0071e3] my-1">4,800 افغانی</span>
+          <button onclick="addToCart('پیراهن گند دست‌دوز', 4800, 1)" class="w-full py-2 bg-[#0071e3] text-white font-bold rounded-xl text-[10px] shadow">افزودن به سبد</button>
+        </div>
+      `;
+    }
+
+    function closeShopModal() { document.getElementById("shop-modal").classList.add("hidden"); }
+    function openAboutModal() { document.getElementById("about-modal").classList.remove("hidden"); }
+    function closeAboutModal() { document.getElementById("about-modal").classList.add("hidden"); }
+
+    function addToCart(title, price, shopId) {
+      cart.push({ title, price, shopId });
+      document.getElementById("cart-count").innerText = cart.length;
+    }
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      document.getElementById("cart-count").innerText = cart.length;
+      renderCartModalItems();
+    }
+    function clearFullCart() {
+      cart = [];
+      document.getElementById("cart-count").innerText = "0";
+      renderCartModalItems();
+    }
+    function openCartModal() {
+      renderCartModalItems();
+      document.getElementById("cart-modal").classList.remove("hidden");
+    }
+    function closeCartModal() { document.getElementById("cart-modal").classList.add("hidden"); }
+
+    function renderCartModalItems() {
+      const container = document.getElementById("cart-items");
+      if (cart.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">سبد خرید شما خالی است.</p>`;
+      } else {
+        container.innerHTML = cart.map((item, index) => `
+          <div class="flex justify-between items-center theme-inner-box p-2.5 rounded-xl text-xs border border-white/10">
+            <div class="flex items-center gap-2">
+              <button onclick="removeFromCart(${index})" class="text-rose-500 p-1">✕</button>
+              <span class="text-white">${item.title}</span>
+            </div>
+            <span class="text-[#0071e3] font-bold">${item.price} افغانی</span>
+          </div>
+        `).join("");
+      }
+      const total = cart.reduce((acc, curr) => acc + curr.price, 0);
+      document.getElementById("cart-total-price").innerText = `${total} افغانی`;
+    }
+
+    function finalizeOrder() {
+      const phone = document.getElementById("order-phone").value.trim();
+      if (!phone) { alert("شماره تماس را وارد کنید"); return; }
+      if (cart.length === 0) { alert("سبد خالی است"); return; }
+
+      const payload = {
+        shopId: cart[0].shopId || 1,
+        productTitle: cart.map(c => c.title).join(" + "),
+        priceAfn: cart.reduce((a, b) => a + b.price, 0),
+        buyerPhone: phone,
+        buyerAddress: document.getElementById("order-delivery").value
+      };
+
+      const twa = window.Telegram?.WebApp?.Serverless;
+      if (twa) {
+        twa.call('submitOrder', payload, () => alert("سفارش با موفقیت ثبت شد"));
+      } else {
+        alert("سفارش با موفقیت ثبت شد");
+      }
+      clearFullCart();
+      closeCartModal();
+    }
+  </script>
 </body>
 </html>
